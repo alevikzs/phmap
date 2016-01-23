@@ -1,0 +1,28 @@
+{
+  "name": "alevikzs/phmap",
+  "description": "Library provide mapping some php structures (json string, array, object) to specific object. This library based on Phalcon annotations.",
+  "keywords": ["json mapper", "phalcon", "annotations", "array mapper"],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alexey Novikov",
+      "email": "alekseeey@gmail.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=5.4.0",
+    "ext-phalcon": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.5.*",
+    "phalcon/devtools": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "PhMap\\": "src",
+      "Tests\\": "tests"
+    }
+  }
+}
