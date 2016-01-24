@@ -24,6 +24,9 @@ install:
   - (cd cphalcon/ext; export CFLAGS="-g3 -O1 -fno-delete-null-pointer-checks -Wall"; phpize &> /dev/null && ./configure --silent --enable-phalcon &> /dev/null && make --silent -j4 > /dev/null && make --silent install && phpenv config-add ../unit-tests/ci/phalcon.ini &> /dev/null)
   - echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - pecl install xcache
+  - echo "extension=xcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - composer self-update
   - composer --prefer-source install
 script:
   - vendor/bin/phpunit
