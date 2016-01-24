@@ -1,8 +1,6 @@
 #PhMap#
 
-##Build Status##
-
-[![Build Status](https://secure.travis-ci.org/alevikzs/phmap.png?branch=master)](http://travis-ci.org/alevikzs/phmap)
+**Build Status:** [![Build Status](https://secure.travis-ci.org/alevikzs/phmap.png?branch=master)](http://travis-ci.org/alevikzs/phmap)
 
 ##About##
 
@@ -12,7 +10,7 @@ properties of this objects must be a public). The PhMap is based on
 
 ##Requirements##
 
-* PHP >= 5.4
+* PHP >= 5.4 && < 7.0
 * Phalcon >= 2.0
 
 ##Installation##

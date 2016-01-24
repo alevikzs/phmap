@@ -11,17 +11,10 @@ use \PhMap\Exception\FieldValidator;
 class UnknownField extends FieldValidator {
 
     /**
-     * @param string $field
-     * @param string $class
+     * return string
      */
-    public function __construct($field, $class) {
-        $this
-            ->setField($field)
-            ->setClass($class);
-
-        $message = "'$class' hasn't '$field' field";
-
-        parent::__construct($message);
+    protected function createMessage() {
+        return '"' . $this->getClass() . '" class has not a "' . $this->getField() . '" field';
     }
 
 }

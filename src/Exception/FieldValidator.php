@@ -54,4 +54,21 @@ abstract class FieldValidator extends Exception {
         return $this;
     }
 
+    /**
+     * @param string $field
+     * @param string $class
+     */
+    public function __construct($field, $class) {
+        $this
+            ->setField($field)
+            ->setClass($class);
+
+        parent::__construct($this->createMessage());
+    }
+
+    /**
+     * @return string
+     */
+    abstract protected function createMessage();
+
 }

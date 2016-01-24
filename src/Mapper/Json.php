@@ -63,28 +63,24 @@ class Json extends Mapper {
      * @param string $class
      */
     public function __construct($string, $class) {
-        $object = $this->toObject($string);
-
         $this
             ->setClass($class)
             ->setString($string)
-            ->setObject($object);
-
+            ->createObject();
     }
 
     /**
-     * @param string $string
-     * @return stdClass
+     * @return $this
      * @throws InvalidJson
      */
-    private function toObject($string) {
-        $object = json_decode($string);
+    private function createObject() {
+        $object = json_decode($this->getString());
 
         if (is_object($object)) {
-            return $object;
+            return $this->setObject($object);
         }
 
-        throw new InvalidJson($string);
+        throw new InvalidJson($this->getString());
     }
 
     /**
