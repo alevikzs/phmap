@@ -10,8 +10,9 @@ properties of this objects must be a public). The PhMap is based on
 
 ##Requirements##
 
-* PHP >= 5.4 && < 7.0
-* Phalcon >= 2.0
+* PHP >= 5.4 && < 7.0;
+* Phalcon >= 2.0;
+* If you will be use [Apc](http://php.net/manual/en/book.apc.php) or [XCache](https://xcache.lighttpd.net/) adapters you need to install corresponding php extensions.
 
 ##Installation##
 
@@ -135,6 +136,21 @@ will be apply automatically:
 
 ```php
 $result = (new \PhMap\Mapper\Smart($value, 'Tree'))->map();
+```
+
+By default mapper use [memory adapter](https://docs.phalconphp.com/en/latest/api/Phalcon_Annotations_Adapter_Memory.html),
+but also you can use [file adapter](https://docs.phalconphp.com/en/latest/api/Phalcon_Annotations_Adapter_Files.html),
+[APC adapter](https://docs.phalconphp.com/en/latest/api/Phalcon_Annotations_Adapter_Apc.html) and
+[XCache adapter](https://docs.phalconphp.com/en/latest/api/Phalcon_Annotations_Adapter_Xcache.html):
+
+```php
+(new \PhMap\Mapper\Json($json, 'Tree', \PhMap\Mapper::MEMORY_ANNOTATION_ADAPTER))->map();
+
+(new \PhMap\Mapper\Smart($json, 'Tree', \PhMap\Mapper::FILES_ANNOTATION_ADAPTER))->map();
+
+(new \PhMap\Mapper\Structure\Associative($array, 'Tree', \PhMap\Mapper::APC_ANNOTATION_ADAPTER))->map();
+
+(new \PhMap\Mapper\Structure\Object($object, 'Tree', \PhMap\Mapper::X_CACHE_ANNOTATION_ADAPTER))->map();
 ```
 
 ##The MIT License (MIT)##

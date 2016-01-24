@@ -35,10 +35,15 @@ class Smart extends Mapper {
         return $this;
     }
 
-    public function __construct($value, $class) {
+    /**
+     * @param string $value
+     * @param integer $class
+     * @param integer $adapter
+     */
+    public function __construct($value, $class, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
         $this->setValue($value);
 
-        parent::__construct($class);
+        parent::__construct($class, $adapter);
     }
 
     /**
@@ -49,7 +54,11 @@ class Smart extends Mapper {
         $mapperClass = $this->detectMapperClass();
 
         /** @var Mapper $mapper */
-        $mapper = new $mapperClass($this->getValue(), $this->getClass());
+        $mapper = new $mapperClass(
+            $this->getValue(),
+            $this->getClass(),
+            $this->getAnnotationAdapterType()
+        );
 
         return $mapper->map();
     }

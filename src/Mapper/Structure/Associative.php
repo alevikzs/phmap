@@ -13,9 +13,10 @@ class Associative extends Structure {
     /**
      * @param array $associativeArray
      * @param string $class
+     * @param integer $adapter
      */
-    public function __construct(array $associativeArray, $class) {
-        parent::__construct($associativeArray, $class);
+    public function __construct(array $associativeArray, $class, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
+        parent::__construct($associativeArray, $class, $adapter);
     }
 
     /**

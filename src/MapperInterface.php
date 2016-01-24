@@ -16,10 +16,9 @@ interface MapperInterface {
     public function getClass();
 
     /**
-     * @param string $class
-     * @return self
+     * @return integer
      */
-    public function setClass($class);
+    public function getAnnotationAdapterType();
 
     /**
      * @return stdClass

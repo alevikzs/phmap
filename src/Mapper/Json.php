@@ -38,7 +38,7 @@ class Json extends Mapper {
     public function setString($string) {
         $this->string = $string;
 
-        return $this;
+        return $this->createObject();
     }
 
     /**
@@ -61,10 +61,12 @@ class Json extends Mapper {
     /**
      * @param string $string
      * @param string $class
+     * @param integer $adapter
      */
-    public function __construct($string, $class) {
+    public function __construct($string, $class, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
+        parent::__construct($class, $adapter);
+
         $this
-            ->setClass($class)
             ->setString($string)
             ->createObject();
     }
@@ -89,7 +91,8 @@ class Json extends Mapper {
     public function map() {
         return (new Object(
             $this->getObject(),
-            $this->getClass()
+            $this->getClass(),
+            $this->getAnnotationAdapterType()
         ))->map();
     }
 

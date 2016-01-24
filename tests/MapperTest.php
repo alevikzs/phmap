@@ -9,10 +9,11 @@ use \stdClass,
     \Tests\Dummy\Branch,
     \Tests\Dummy\Leaf,
 
-    \PhMap\Mapper\Structure\Object,
-    \PhMap\Mapper\Structure\Associative,
+    \PhMap\Mapper,
     \PhMap\Mapper\Json,
-    \PhMap\Mapper\Smart;
+    \PhMap\Mapper\Smart,
+    \PhMap\Mapper\Structure\Object,
+    \PhMap\Mapper\Structure\Associative;
 
 /**
  * Class MapperTest
@@ -60,7 +61,7 @@ class MapperTest extends TestCase {
         return json_decode(self::getTreeJson(), true);
     }
 
-    public function testMain() {
+    public function testMapperWithMemoryAdapter() {
         $class = '\Tests\Dummy\Tree';
 
         /** @var Tree $objectMapped */
@@ -77,7 +78,41 @@ class MapperTest extends TestCase {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
-    public  function testSmartMapper() {
+    public function testMapperWithFilesAdapter() {
+        $class = '\Tests\Dummy\Tree';
+
+        /** @var Tree $objectMapped */
+        $objectMapped = (new Json(self::getTreeJson(), $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = (new Object(self::getTreeDecodedToObject(), $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = (new Associative(self::getTreeDecodedToArray(), $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+    }
+
+    public function testMapperWithApcAdapter() {
+        $class = '\Tests\Dummy\Tree';
+
+        /** @var Tree $objectMapped */
+        $objectMapped = (new Json(self::getTreeJson(), $class, Mapper::APC_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = (new Object(self::getTreeDecodedToObject(), $class, Mapper::APC_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = (new Associative(self::getTreeDecodedToArray(), $class, Mapper::APC_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+    }
+
+    public function testSmartMapper() {
         $class = '\Tests\Dummy\Tree';
 
         /** @var Tree $objectMapped */
@@ -232,6 +267,20 @@ class MapperTest extends TestCase {
         $class = '\Tests\Dummy\Tree';
 
         (new Smart($value, $class))
+            ->map();
+    }
+
+    public function testUnknownAdapter() {
+        $this->setExpectedException(
+            '\PhMap\Exception\UnknownAnnotationAdapter',
+            'Unknown annotation adapter'
+        );
+
+        $class = '\Tests\Dummy\Tree';
+
+        $adapter = 10;
+
+        (new Object(self::getTreeDecodedToObject(), $class, $adapter))
             ->map();
     }
 

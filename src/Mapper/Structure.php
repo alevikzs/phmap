@@ -7,13 +7,18 @@ use \stdClass,
     \Phalcon\Annotations\Annotation,
     \Phalcon\Annotations\Reflection,
     \Phalcon\Annotations\Collection as Annotations,
-    \Phalcon\Annotations\Adapter\Memory as MemoryAdapter,
+    \Phalcon\Annotations\AdapterInterface,
+    \Phalcon\Annotations\Adapter\Memory,
+    \Phalcon\Annotations\Adapter\Files,
+    \Phalcon\Annotations\Adapter\Apc,
+    \Phalcon\Annotations\Adapter\Xcache,
 
     \PhMap\Mapper,
     \PhMap\Exception\FieldValidator\UnknownField as UnknownFieldException,
     \PhMap\Exception\FieldValidator\MustBeSimple as MustBeSimpleException,
     \PhMap\Exception\FieldValidator\MustBeSequence as MustBeSequenceException,
-    \PhMap\Exception\FieldValidator\MustBeObject as MustBeObjectException;
+    \PhMap\Exception\FieldValidator\MustBeObject as MustBeObjectException,
+    \PhMap\Exception\UnknownAnnotationAdapter;
 
 /**
  * Class Structure
@@ -22,31 +27,19 @@ use \stdClass,
 abstract class Structure extends Mapper {
 
     /**
-     * @var Reflection
-     */
-    private $reflector;
-
-    /**
      * @var array|stdClass
      */
     private $structure;
 
     /**
-     * @return Reflection
+     * @var AdapterInterface
      */
-    protected function getReflector() {
-        return $this->reflector;
-    }
+    private $annotationAdapter;
 
     /**
-     * @param Reflection $reflector
-     * @return $this
+     * @var Reflection
      */
-    protected function setReflector(Reflection $reflector) {
-        $this->reflector = $reflector;
-
-        return $this;
-    }
+    private $reflector;
 
     /**
      * @return array|stdClass
@@ -66,18 +59,96 @@ abstract class Structure extends Mapper {
     }
 
     /**
+     * @return Reflection
+     */
+    protected function getReflector() {
+        return $this->reflector;
+    }
+
+    /**
+     * @param Reflection $reflector
+     * @return $this
+     */
+    private function setReflector(Reflection $reflector) {
+        $this->reflector = $reflector;
+
+        return $this;
+    }
+
+    /**
+     * @return AdapterInterface
+     */
+    protected function getAnnotationAdapter() {
+        return $this->annotationAdapter;
+    }
+
+    /**
+     * @param AdapterInterface $adapter
+     * @return $this
+     */
+    private function setAnnotationAdapter(AdapterInterface $adapter) {
+        $this->annotationAdapter = $adapter;
+
+        return $this;
+    }
+
+    /**
      * @param array|stdClass $structure
+     * @param integer $adapter
      * @param string $class
      */
-    public function __construct($structure, $class) {
+    public function __construct($structure, $class, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
+        parent::__construct($class, $adapter);
+
         $this
             ->setStructure($structure)
-            ->setReflector(
-                (new MemoryAdapter())
-                    ->get($class)
-            );
+            ->createAnnotationAdapter()
+            ->createReflector();
+    }
 
-        parent::__construct($class);
+    /**
+     * @return $this
+     * @throws UnknownAnnotationAdapter
+     */
+    private function createAnnotationAdapter() {
+        switch ($this->getAnnotationAdapterType()) {
+            case self::MEMORY_ANNOTATION_ADAPTER:
+                $this->setAnnotationAdapter(new Memory());
+                break;
+            case self::FILES_ANNOTATION_ADAPTER:
+                $this->setAnnotationAdapter(new Files([
+                    'annotationsDir' => $this->getCacheDirectory()
+                ]));
+                break;
+            case self::APC_ANNOTATION_ADAPTER:
+                $this->setAnnotationAdapter(new Apc());
+                break;
+            case self::X_CACHE_ANNOTATION_ADAPTER:
+                $this->setAnnotationAdapter(new Xcache());
+                break;
+            default:
+                throw new UnknownAnnotationAdapter();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    private function getCacheDirectory() {
+        return dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
+            'cache' . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * @return $this
+     */
+    private function createReflector() {
+        return $this->setReflector(
+            $this->getAnnotationAdapter()
+                ->get($this->getClass())
+        );
     }
 
     /**
