@@ -13,7 +13,7 @@ properties of this objects must be a public). The PhMap is based on
 
 ##Installation##
 
-1. Require the package and its dependencies with composer: ```bash $ composer require alevikzs/phmap```
+1. Require the package and its dependencies with composer: ```$ composer require alevikzs/phmap```
 2. Install Phalcon framework. Detail guide is [here](https://phalconphp.com/en/download).
 
 ##Examples##
