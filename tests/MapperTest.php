@@ -95,40 +95,6 @@ class MapperTest extends TestCase {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
-    public function testMapperWithApcAdapter() {
-        $class = '\Tests\Dummy\Tree';
-
-        /** @var Tree $objectMapped */
-        $objectMapped = (new Json(self::getTreeJson(), $class, Mapper::APC_ANNOTATION_ADAPTER))
-            ->map();
-        $this->assertEquals($objectMapped, self::getTree());
-
-        $objectMapped = (new Object(self::getTreeDecodedToObject(), $class, Mapper::APC_ANNOTATION_ADAPTER))
-            ->map();
-        $this->assertEquals($objectMapped, self::getTree());
-
-        $objectMapped = (new Associative(self::getTreeDecodedToArray(), $class, Mapper::APC_ANNOTATION_ADAPTER))
-            ->map();
-        $this->assertEquals($objectMapped, self::getTree());
-    }
-
-    public function testMapperWithXCacheAdapter() {
-        $class = '\Tests\Dummy\Tree';
-
-        /** @var Tree $objectMapped */
-        $objectMapped = (new Json(self::getTreeJson(), $class, Mapper::X_CACHE_ANNOTATION_ADAPTER))
-            ->map();
-        $this->assertEquals($objectMapped, self::getTree());
-
-        $objectMapped = (new Object(self::getTreeDecodedToObject(), $class, Mapper::X_CACHE_ANNOTATION_ADAPTER))
-            ->map();
-        $this->assertEquals($objectMapped, self::getTree());
-
-        $objectMapped = (new Associative(self::getTreeDecodedToArray(), $class, Mapper::X_CACHE_ANNOTATION_ADAPTER))
-            ->map();
-        $this->assertEquals($objectMapped, self::getTree());
-    }
-
     public function testSmartMapper() {
         $class = '\Tests\Dummy\Tree';
 

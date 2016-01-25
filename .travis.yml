@@ -21,22 +21,6 @@ cache:
 install:
   - git clone -q --depth=1 https://github.com/phalcon/cphalcon.git -b phalcon-v${PHALCON_VERSION}
   - (cd cphalcon/ext; export CFLAGS="-g3 -O1 -fno-delete-null-pointer-checks -Wall"; phpize &> /dev/null && ./configure --silent --enable-phalcon &> /dev/null && make --silent -j4 > /dev/null && make --silent install && phpenv config-add ../unit-tests/ci/phalcon.ini &> /dev/null)
-  - echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - wget http://xcache.lighttpd.net/pub/Releases/3.2.0/xcache-3.2.0.tar.gz
-  - wget http://xcache.lighttpd.net/pub/Releases/3.2.0/xcache-3.2.0.tar.gz.md5.txt
-  - md5sum -c xcache-3.2.0.tar.gz.md5.txt
-  - tar xf xcache-3.2.0.tar.gz
-  - pushd xcache-3.2.0
-  - phpize
-  - ./configure
-  - make
-  - NO_INTERACTION=1 make test
-  - make install
-  - popd
-  - printf "extension=xcache.so\nxcache.size=64M\nxcache.var_size=16M\nxcache.test=On" > xcache.ini
-  - phpenv config-add xcache.ini
-  - composer self-update
   - composer --prefer-source install
 script:
   - vendor/bin/phpunit
