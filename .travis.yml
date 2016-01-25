@@ -26,6 +26,19 @@ install:
   - (cd cphalcon/ext; export CFLAGS="-g3 -O1 -fno-delete-null-pointer-checks -Wall"; phpize &> /dev/null && ./configure --silent --enable-phalcon &> /dev/null && make --silent -j4 > /dev/null && make --silent install && phpenv config-add ../unit-tests/ci/phalcon.ini &> /dev/null)
   - echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - wget http://xcache.lighttpd.net/pub/Releases/${XCACHE_VERSION}/xcache-${XCACHE_VERSION}.tar.gz
+  - wget http://xcache.lighttpd.net/pub/Releases/${XCACHE_VERSION}/xcache-${XCACHE_VERSION}.tar.gz.md5.txt
+  - md5sum -c xcache-${XCACHE_VERSION}.tar.gz.md5.txt
+  - tar xf xcache-${XCACHE_VERSION}.tar.gz
+  - pushd xcache-${XCACHE_VERSION}
+  - phpize
+  - ./configure
+  - make
+  - NO_INTERACTION=1 make test
+  - make install
+  - popd
+  - printf "extension=xcache.so\nxcache.size=64M\nxcache.var_size=16M\nxcache.test=On" > xcache.ini
+  - phpenv config-add xcache.ini
   - composer self-update
   - composer --prefer-source install
 script:
