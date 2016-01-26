@@ -16,6 +16,11 @@ interface MapperInterface {
     public function getClass();
 
     /**
+     * @return stdClass
+     */
+    public function getInstance();
+
+    /**
      * @return integer
      */
     public function getAnnotationAdapterType();

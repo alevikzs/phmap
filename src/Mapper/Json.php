@@ -49,10 +49,10 @@ class Json extends Mapper {
     }
 
     /**
-     * @param string $object
+     * @param stdClass $object
      * @return $this
      */
-    private function setObject($object) {
+    private function setObject(stdClass $object) {
         $this->object = $object;
 
         return $this;
@@ -60,11 +60,11 @@ class Json extends Mapper {
 
     /**
      * @param string $string
-     * @param string $class
+     * @param string|stdClass $toMap
      * @param integer $adapter
      */
-    public function __construct($string, $class, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
-        parent::__construct($class, $adapter);
+    public function __construct($string, $toMap, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
+        parent::__construct($toMap, $adapter);
 
         $this
             ->setString($string)

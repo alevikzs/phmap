@@ -95,10 +95,10 @@ abstract class Structure extends Mapper {
     /**
      * @param array|stdClass $structure
      * @param integer $adapter
-     * @param string $class
+     * @param string|stdClass $toMap
      */
-    public function __construct($structure, $class, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
-        parent::__construct($class, $adapter);
+    public function __construct($structure, $toMap, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
+        parent::__construct($toMap, $adapter);
 
         $this
             ->setStructure($structure)
@@ -156,9 +156,6 @@ abstract class Structure extends Mapper {
      * @throws UnknownFieldException
      */
     public function map() {
-        $class = $this->getClass();
-        $instance = new $class();
-
         $methodsAnnotations = $this
             ->getReflector()
             ->getMethodsAnnotations();
@@ -172,13 +169,15 @@ abstract class Structure extends Mapper {
 
                 $valueToMap = $this->buildValueToMap($attribute, $value, $methodAnnotations);
 
-                $instance->$setter($valueToMap);
+                $this
+                    ->getInstance()
+                    ->$setter($valueToMap);
             } else {
-                throw new UnknownFieldException($attribute, $class);
+                throw new UnknownFieldException($attribute, $this->getClass());
             }
         }
 
-        return $instance;
+        return $this->getInstance();
     }
 
     /**

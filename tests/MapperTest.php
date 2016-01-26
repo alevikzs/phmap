@@ -95,19 +95,34 @@ class MapperTest extends TestCase {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    public function testMapperWithInstances() {
+        /** @var Tree $objectMapped */
+        $objectMapped = (new Json(self::getTreeJson(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = (new Object(self::getTreeDecodedToObject(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = (new Associative(self::getTreeDecodedToArray(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+    }
+
     public function testSmartMapper() {
         $class = '\Tests\Dummy\Tree';
 
         /** @var Tree $objectMapped */
-        $objectMapped = (new Smart(self::getTreeJson(), $class))
+        $objectMapped = (new Smart(self::getTreeJson(), $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
         $this->assertEquals($objectMapped, self::getTree());
 
-        $objectMapped = (new Smart(self::getTreeDecodedToObject(), $class))
+        $objectMapped = (new Smart(self::getTreeDecodedToObject(), $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
         $this->assertEquals($objectMapped, self::getTree());
 
-        $objectMapped = (new Smart(self::getTreeDecodedToArray(), $class))
+        $objectMapped = (new Smart(self::getTreeDecodedToArray(), $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
         $this->assertEquals($objectMapped, self::getTree());
     }
@@ -125,7 +140,7 @@ class MapperTest extends TestCase {
 
         $object->height = $height;
 
-        (new Object($object, $class))
+        (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
@@ -141,7 +156,7 @@ class MapperTest extends TestCase {
             'bar' => 2
         ];
 
-        (new Associative($array, $class))
+        (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
@@ -154,7 +169,7 @@ class MapperTest extends TestCase {
 
         $object->branch->leaves = new stdClass();
 
-        (new Object($object, $class))
+        (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
@@ -169,7 +184,7 @@ class MapperTest extends TestCase {
             'leaves' => ['foo' => 1]
         ];
 
-        (new Associative($array, $class))
+        (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
@@ -182,7 +197,7 @@ class MapperTest extends TestCase {
 
         $object->branch = 1;
 
-        (new Object($object, $class))
+        (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
@@ -195,7 +210,7 @@ class MapperTest extends TestCase {
 
         $array['branch'] = 1;
 
-        (new Associative($array, $class))
+        (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
@@ -208,7 +223,7 @@ class MapperTest extends TestCase {
 
         $object->foo = 1;
 
-        (new Object($object, $class))
+        (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
@@ -221,7 +236,7 @@ class MapperTest extends TestCase {
 
         $array['foo'] = 1;
 
-        (new Associative($array, $class))
+        (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
@@ -235,7 +250,7 @@ class MapperTest extends TestCase {
 
         $class = '\Tests\Dummy\Tree';
 
-        (new Json($json, $class))
+        (new Json($json, $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
@@ -249,7 +264,7 @@ class MapperTest extends TestCase {
 
         $class = '\Tests\Dummy\Tree';
 
-        (new Smart($value, $class))
+        (new Smart($value, $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
@@ -264,6 +279,18 @@ class MapperTest extends TestCase {
         $adapter = 10;
 
         (new Object(self::getTreeDecodedToObject(), $class, $adapter))
+            ->map();
+    }
+
+    public function testInvalidValueToMapInvalidClassName() {
+        $class = '\Tests\Dummy\InvalidClass';
+
+        $this->setExpectedException(
+            '\PhMap\Exception\InvalidValueToMap',
+            'Value "' . $class . '" cannot be mapped. Must be an instance or valid class name'
+        );
+
+        (new Object(self::getTreeDecodedToObject(), $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 

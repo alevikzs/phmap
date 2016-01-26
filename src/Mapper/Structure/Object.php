@@ -14,11 +14,11 @@ class Object extends Structure {
 
     /**
      * @param stdClass $object
-     * @param string $class
+     * @param string|stdClass $toMap
      * @param integer $adapter
      */
-    public function __construct(stdClass $object, $class, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
-        parent::__construct($object, $class, $adapter);
+    public function __construct(stdClass $object, $toMap, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
+        parent::__construct($object, $toMap, $adapter);
     }
 
     /**

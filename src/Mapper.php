@@ -2,6 +2,10 @@
 
 namespace PhMap;
 
+use \stdClass,
+
+    \PhMap\Exception\InvalidValueToMap;
+
 /**
  * Class Mapper
  * @package PhMap
@@ -34,6 +38,11 @@ abstract class Mapper implements MapperInterface {
     private $class;
 
     /**
+     * @var stdClass
+     */
+    private $instance;
+
+    /**
      * @var integer
      */
     private $annotationAdapterType;
@@ -56,6 +65,23 @@ abstract class Mapper implements MapperInterface {
     }
 
     /**
+     * @return string
+     */
+    public function getInstance() {
+        return $this->instance;
+    }
+
+    /**
+     * @param string $instance
+     * @return $this
+     */
+    private function setInstance($instance) {
+        $this->instance = $instance;
+
+        return $this;
+    }
+
+    /**
      * @return integer
      */
     public function getAnnotationAdapterType() {
@@ -73,12 +99,24 @@ abstract class Mapper implements MapperInterface {
     }
 
     /**
-     * @param string $class
+     * @param string|stdClass $toMap
      * @param integer $adapter
+     * @throws InvalidValueToMap
      */
-    public function __construct($class, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
+    public function __construct($toMap, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
+        if (is_object($toMap)) {
+            $instance = $toMap;
+            $class = get_class($instance);
+        } elseif(is_string($toMap) && class_exists($toMap)) {
+            $class = $toMap;
+            $instance = new $class();
+        } else {
+            throw new InvalidValueToMap($toMap);
+        }
+
         $this
             ->setClass($class)
+            ->setInstance($instance)
             ->setAnnotationAdapterType($adapter);
     }
 

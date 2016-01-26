@@ -14,19 +14,19 @@ use \stdClass,
 class Smart extends Mapper {
 
     /**
-     * @var string|object|array
+     * @var string|stdClass|array
      */
     private $value;
 
     /**
-     * @return array|object|string
+     * @return array|stdClass|string
      */
     public function getValue() {
         return $this->value;
     }
 
     /**
-     * @param array|object|string $value
+     * @param array|stdClass|string $value
      * @return $this
      */
     public function setValue($value) {
@@ -36,14 +36,14 @@ class Smart extends Mapper {
     }
 
     /**
-     * @param string $value
-     * @param integer $class
+     * @param array|stdClass|string $value
+     * @param string|stdClass $toMap
      * @param integer $adapter
      */
-    public function __construct($value, $class, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
+    public function __construct($value, $toMap, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
         $this->setValue($value);
 
-        parent::__construct($class, $adapter);
+        parent::__construct($toMap, $adapter);
     }
 
     /**
@@ -56,7 +56,7 @@ class Smart extends Mapper {
         /** @var Mapper $mapper */
         $mapper = new $mapperClass(
             $this->getValue(),
-            $this->getClass(),
+            $this->getInstance(),
             $this->getAnnotationAdapterType()
         );
 
