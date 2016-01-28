@@ -131,7 +131,7 @@ Create object of Tree class from another object:
 $result = (new \PhMap\Mapper\Structure\Object($object, 'Tree'))->map();
 ```
 
-You can use ```php \PhMap\Mapper\Smart``` if you don't know what type of you value. In this case mapping instructions 
+You can use ```\PhMap\Mapper\Smart``` if you don't know what type of you value. In this case mapping instructions 
 will be apply automatically:
 
 ```php
