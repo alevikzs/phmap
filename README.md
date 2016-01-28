@@ -153,6 +153,14 @@ but also you can use [file adapter](https://docs.phalconphp.com/en/latest/api/Ph
 (new \PhMap\Mapper\Structure\Object($object, 'Tree', \PhMap\Mapper::X_CACHE_ANNOTATION_ADAPTER))->map();
 ```
 
+Also you can pass already existing object to the constructor:
+
+```php
+$tree = new Tree();
+
+(new \PhMap\Mapper\Smart($json, $tree))->map();
+```
+
 ##The MIT License (MIT)##
 
 **Copyright (c) 2016 Alexey Novikov <alekseeey@gmail.com>**
