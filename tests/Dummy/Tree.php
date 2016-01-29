@@ -2,9 +2,9 @@
 
 namespace Tests\Dummy;
 
-use \JsonSerializable;
+use \JsonSerializable,
 
-use \PhMap\MapperTrait;
+    \PhMap\MapperTrait;
 
 /**
  * Class Tree

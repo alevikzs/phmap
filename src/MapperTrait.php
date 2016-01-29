@@ -2,9 +2,9 @@
 
 namespace PhMap;
 
-use stdClass;
+use \stdClass,
 
-use \PhMap\Mapper\Smart;
+    \PhMap\Mapper\Smart;
 
 /**
  * Class MapperTrait
