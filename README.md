@@ -161,6 +161,23 @@ $tree = new Tree();
 (new \PhMap\Mapper\Smart($json, $tree))->map();
 ```
 
+If you want your class can map some value to itself you must use MapperTrait in your class declaration:
+
+```php
+class Tree {
+
+   use \PhMap\MapperTrait
+```
+
+and then you can call ```map()``` or ```staticMap()``` methods:
+
+```php
+$tree = new Tree();
+$result = $tree->map($json);
+
+$result = Tree::staticMap($json);
+```
+
 ##The MIT License (MIT)##
 
 **Copyright (c) 2016 Alexey Novikov <alekseeey@gmail.com>**

@@ -4,11 +4,15 @@ namespace Tests\Dummy;
 
 use \JsonSerializable;
 
+use \PhMap\MapperTrait;
+
 /**
  * Class Tree
  * @package Tests\Dummy
  */
 class Tree implements JsonSerializable {
+
+    use MapperTrait;
 
     /**
      * @var double

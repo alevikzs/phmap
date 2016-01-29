@@ -127,6 +127,14 @@ class MapperTest extends TestCase {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    public function testMapperTrait() {
+        $objectMapped = Tree::staticMap(self::getTreeJson(), Mapper::FILES_ANNOTATION_ADAPTER);
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = (new Tree())->map(self::getTreeJson(), Mapper::FILES_ANNOTATION_ADAPTER);
+        $this->assertEquals($objectMapped, self::getTree());
+    }
+
     public function testMustBeSimpleExceptionForObjectStructure() {
         $this->setExpectedException('\PhMap\Exception\FieldValidator\MustBeSimple');
 
