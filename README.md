@@ -4,20 +4,20 @@
 
 ##About##
 
-The PhMap is a library for creating objects from json strings, associative arrays and objects(the 
+The PhMap is a PHP package for creating objects from json strings, associative arrays and other objects(the 
 properties of this objects must be a public). The PhMap is based on 
 [phalcon annotations](https://docs.phalconphp.com/en/latest/reference/annotations.html).
 
 ##Requirements##
 
 * PHP >= 5.4 && < 7.0;
-* Phalcon >= 2.0;
+* [Phalcon framework](https://phalconphp.com) >= 2.0;
 * If you will be use [Apc](http://php.net/manual/en/book.apc.php) or [XCache](https://xcache.lighttpd.net/) adapters you need to install corresponding php extensions.
 
 ##Installation##
 
 1. Require the package and its dependencies with composer: ```$ composer require alevikzs/phmap```
-2. Install Phalcon framework. Detail guide is [here](https://phalconphp.com/en/download).
+2. Install [Phalcon framework](https://phalconphp.com). Detail guide is [here](https://phalconphp.com/en/download).
 
 ##Examples##
 
@@ -144,13 +144,13 @@ but also you can use [file adapter](https://docs.phalconphp.com/en/latest/api/Ph
 [XCache adapter](https://docs.phalconphp.com/en/latest/api/Phalcon_Annotations_Adapter_Xcache.html):
 
 ```php
-(new \PhMap\Mapper\Json($json, 'Tree', \PhMap\Mapper::MEMORY_ANNOTATION_ADAPTER))->map();
+$result = (new \PhMap\Mapper\Json($json, 'Tree', \PhMap\Mapper::MEMORY_ANNOTATION_ADAPTER))->map();
 
-(new \PhMap\Mapper\Smart($json, 'Tree', \PhMap\Mapper::FILES_ANNOTATION_ADAPTER))->map();
+$result = (new \PhMap\Mapper\Smart($json, 'Tree', \PhMap\Mapper::FILES_ANNOTATION_ADAPTER))->map();
 
-(new \PhMap\Mapper\Structure\Associative($array, 'Tree', \PhMap\Mapper::APC_ANNOTATION_ADAPTER))->map();
+$result = (new \PhMap\Mapper\Structure\Associative($array, 'Tree', \PhMap\Mapper::APC_ANNOTATION_ADAPTER))->map();
 
-(new \PhMap\Mapper\Structure\Object($object, 'Tree', \PhMap\Mapper::X_CACHE_ANNOTATION_ADAPTER))->map();
+$result = (new \PhMap\Mapper\Structure\Object($object, 'Tree', \PhMap\Mapper::X_CACHE_ANNOTATION_ADAPTER))->map();
 ```
 
 Also you can pass already existing object to the constructor:
@@ -158,7 +158,7 @@ Also you can pass already existing object to the constructor:
 ```php
 $tree = new Tree();
 
-(new \PhMap\Mapper\Smart($json, $tree))->map();
+$result = (new \PhMap\Mapper\Smart($json, $tree))->map();
 ```
 
 If you want your class can map some value to itself you must use MapperTrait in your class declaration:
@@ -166,7 +166,11 @@ If you want your class can map some value to itself you must use MapperTrait in 
 ```php
 class Tree {
 
-   use \PhMap\MapperTrait
+   use \PhMap\MapperTrait;
+   
+   //other class declaration
+   
+}
 ```
 
 and then you can call ```map()``` or ```staticMap()``` methods:
