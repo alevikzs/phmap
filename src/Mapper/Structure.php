@@ -2,9 +2,7 @@
 
 namespace PhMap\Mapper;
 
-use \stdClass,
-
-    \Phalcon\Annotations\Annotation,
+use \Phalcon\Annotations\Annotation,
     \Phalcon\Annotations\Reflection,
     \Phalcon\Annotations\Collection as Annotations,
     \Phalcon\Annotations\AdapterInterface,
@@ -14,11 +12,11 @@ use \stdClass,
     \Phalcon\Annotations\Adapter\Xcache,
 
     \PhMap\Mapper,
+    \PhMap\Exception\UnknownAnnotationAdapter,
     \PhMap\Exception\FieldValidator\UnknownField as UnknownFieldException,
     \PhMap\Exception\FieldValidator\MustBeSimple as MustBeSimpleException,
     \PhMap\Exception\FieldValidator\MustBeSequence as MustBeSequenceException,
-    \PhMap\Exception\FieldValidator\MustBeObject as MustBeObjectException,
-    \PhMap\Exception\UnknownAnnotationAdapter;
+    \PhMap\Exception\FieldValidator\MustBeObject as MustBeObjectException;
 
 /**
  * Class Structure
@@ -27,7 +25,7 @@ use \stdClass,
 abstract class Structure extends Mapper {
 
     /**
-     * @var array|stdClass
+     * @var array|object
      */
     private $structure;
 
@@ -42,17 +40,17 @@ abstract class Structure extends Mapper {
     private $reflector;
 
     /**
-     * @return array|stdClass
+     * @return array|object
      */
-    public function getStructure() {
+    protected function getInputStructure() {
         return $this->structure;
     }
 
     /**
-     * @param array|stdClass $structure
+     * @param array|object $structure
      * @return $this
      */
-    public function setStructure($structure) {
+    protected function setInputStructure($structure) {
         $this->structure = $structure;
 
         return $this;
@@ -61,7 +59,7 @@ abstract class Structure extends Mapper {
     /**
      * @return Reflection
      */
-    protected function getReflector() {
+    private function getReflector() {
         return $this->reflector;
     }
 
@@ -78,7 +76,7 @@ abstract class Structure extends Mapper {
     /**
      * @return AdapterInterface
      */
-    protected function getAnnotationAdapter() {
+    private function getAnnotationAdapter() {
         return $this->annotationAdapter;
     }
 
@@ -93,15 +91,34 @@ abstract class Structure extends Mapper {
     }
 
     /**
-     * @param array|stdClass $structure
      * @param integer $adapter
-     * @param string|stdClass $toMap
+     * @return $this
      */
-    public function __construct($structure, $toMap, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
-        parent::__construct($toMap, $adapter);
+    public function setAnnotationAdapterType($adapter) {
+        if ($adapter !== $this->getAnnotationAdapterType()) {
+            parent::setAnnotationAdapterType($adapter);
+
+            $this->createAnnotationAdapter()
+                ->createReflector();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array|object $inputStructure
+     * @param string|object $outputClassOrObject
+     * @param integer $adapter
+     */
+    public function __construct(
+        $inputStructure, 
+        $outputClassOrObject, 
+        $adapter = self::MEMORY_ANNOTATION_ADAPTER
+    ) {
+        parent::__construct($outputClassOrObject, $adapter);
 
         $this
-            ->setStructure($structure)
+            ->setInputStructure($inputStructure)
             ->createAnnotationAdapter()
             ->createReflector();
     }
@@ -147,12 +164,12 @@ abstract class Structure extends Mapper {
     private function createReflector() {
         return $this->setReflector(
             $this->getAnnotationAdapter()
-                ->get($this->getClass())
+                ->get($this->getOutputClass())
         );
     }
 
     /**
-     * @return stdClass
+     * @return object
      * @throws UnknownFieldException
      */
     public function map() {
@@ -160,7 +177,7 @@ abstract class Structure extends Mapper {
             ->getReflector()
             ->getMethodsAnnotations();
 
-        foreach ($this->getStructure() as $attribute => $value) {
+        foreach ($this->getInputStructure() as $attribute => $value) {
             $setter = $this->createSetter($attribute);
 
             if ($this->hasAttribute($attribute)) {
@@ -170,14 +187,14 @@ abstract class Structure extends Mapper {
                 $valueToMap = $this->buildValueToMap($attribute, $value, $methodAnnotations);
 
                 $this
-                    ->getInstance()
+                    ->getOutputObject()
                     ->$setter($valueToMap);
             } else {
-                throw new UnknownFieldException($attribute, $this->getClass());
+                throw new UnknownFieldException($attribute, $this->getOutputClass());
             }
         }
 
-        return $this->getInstance();
+        return $this->getOutputObject();
     }
 
     /**
@@ -200,9 +217,9 @@ abstract class Structure extends Mapper {
 
             if ($this->isObject($value)) {
                 if ($mapperAnnotationIsArray) {
-                    throw new MustBeSequenceException($attribute, $this->getClass());
+                    throw new MustBeSequenceException($attribute, $this->getOutputClass());
                 } else {
-                    /** @var stdClass|array $value */
+                    /** @var object|array $value */
                     $mapper = new static($value, $mapperAnnotationClass);
                     $valueToMap = $mapper->map();
                 }
@@ -213,11 +230,11 @@ abstract class Structure extends Mapper {
                             ->map();
                     }, $value);
                 } else {
-                    throw new MustBeObjectException($attribute, $this->getClass());
+                    throw new MustBeObjectException($attribute, $this->getOutputClass());
                 }
             }
         } elseif ($this->isStructure($value)) {
-            throw new MustBeSimpleException($attribute, $this->getClass());
+            throw new MustBeSimpleException($attribute, $this->getOutputClass());
         }
 
         return $valueToMap;
@@ -231,8 +248,8 @@ abstract class Structure extends Mapper {
         $setter = $this->createSetter($attribute);
         $getter = $this->createGetter($attribute);
 
-        return method_exists($this->getClass(), $getter)
-            && method_exists($this->getClass(), $setter);
+        return method_exists($this->getOutputClass(), $getter)
+            && method_exists($this->getOutputClass(), $setter);
     }
 
     /**

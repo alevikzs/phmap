@@ -2,8 +2,6 @@
 
 namespace PhMap;
 
-use \stdClass;
-
 /**
  * Interface MapperInterface
  * @package PhMap
@@ -13,12 +11,24 @@ interface MapperInterface {
     /**
      * @return string
      */
-    public function getClass();
+    public function getOutputClass();
 
     /**
-     * @return stdClass
+     * @param string $class
+     * @return $this
      */
-    public function getInstance();
+    public function setOutputClass($class);
+
+    /**
+     * @return object
+     */
+    public function getOutputObject();
+
+    /**
+     * @param object $object
+     * @return $this
+     */
+    public function setOutputObject($object);
 
     /**
      * @return integer
@@ -26,7 +36,13 @@ interface MapperInterface {
     public function getAnnotationAdapterType();
 
     /**
-     * @return stdClass
+     * @param integer $adapter
+     * @return $this
+     */
+    public function setAnnotationAdapterType($adapter);
+
+    /**
+     * @return object
      */
     public function map();
 

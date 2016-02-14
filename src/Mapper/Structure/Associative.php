@@ -2,9 +2,7 @@
 
 namespace PhMap\Mapper\Structure;
 
-use \stdClass,
-
-    \PhMap\Mapper\Structure;
+use \PhMap\Mapper\Structure;
 
 /**
  * Class Associative
@@ -13,12 +11,31 @@ use \stdClass,
 class Associative extends Structure {
 
     /**
-     * @param array $associativeArray
-     * @param string|stdClass $toMap
+     * @param array $array
+     * @param string|object $outputClassOrObject
      * @param integer $adapter
      */
-    public function __construct(array $associativeArray, $toMap, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
-        parent::__construct($associativeArray, $toMap, $adapter);
+    public function __construct(
+        array $array,
+        $outputClassOrObject,
+        $adapter = self::MEMORY_ANNOTATION_ADAPTER
+    ) {
+        parent::__construct($array, $outputClassOrObject, $adapter);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getInputArray() {
+        return $this->getInputStructure();
+    }
+
+    /**
+     * @param array $array
+     * @return $this
+     */
+    protected function setInputObject(array $array) {
+        return $this->setInputStructure($array);
     }
 
     /**

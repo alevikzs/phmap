@@ -2,9 +2,7 @@
 
 namespace PhMap\Mapper\Structure;
 
-use \stdClass,
-
-    \PhMap\Mapper\Structure;
+use \PhMap\Mapper\Structure;
 
 /**
  * Class Object
@@ -13,12 +11,31 @@ use \stdClass,
 class Object extends Structure {
 
     /**
-     * @param stdClass $object
-     * @param string|stdClass $toMap
+     * @param object $inputObject
+     * @param string|object $outputClassOrObject
      * @param integer $adapter
      */
-    public function __construct(stdClass $object, $toMap, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
-        parent::__construct($object, $toMap, $adapter);
+    public function __construct(
+        $inputObject,
+        $outputClassOrObject,
+        $adapter = self::MEMORY_ANNOTATION_ADAPTER
+    ) {
+        parent::__construct($inputObject, $outputClassOrObject, $adapter);
+    }
+
+    /**
+     * @return object
+     */
+    protected function getInputObject() {
+        return $this->getInputStructure();
+    }
+
+    /**
+     * @param object $object
+     * @return $this
+     */
+    protected function setInputObject($object) {
+        return $this->setInputStructure($object);
     }
 
     /**

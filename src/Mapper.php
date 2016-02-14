@@ -2,10 +2,6 @@
 
 namespace PhMap;
 
-use \stdClass,
-
-    \PhMap\Exception\InvalidValueToMap;
-
 /**
  * Class Mapper
  * @package PhMap
@@ -35,12 +31,12 @@ abstract class Mapper implements MapperInterface {
     /**
      * @var string
      */
-    private $class;
+    private $outputClass;
 
     /**
-     * @var stdClass
+     * @var object
      */
-    private $instance;
+    private $outputObject;
 
     /**
      * @var integer
@@ -50,33 +46,35 @@ abstract class Mapper implements MapperInterface {
     /**
      * @return string
      */
-    public function getClass() {
-        return $this->class;
+    public function getOutputClass() {
+        return $this->outputClass;
     }
 
     /**
      * @param string $class
      * @return $this
      */
-    private function setClass($class) {
-        $this->class = $class;
+    public function setOutputClass($class) {
+        $this->outputClass = $class;
+        $this->outputObject = new $class();
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return object
      */
-    public function getInstance() {
-        return $this->instance;
+    public function getOutputObject() {
+        return $this->outputObject;
     }
 
     /**
-     * @param string $instance
+     * @param object $object
      * @return $this
      */
-    private function setInstance($instance) {
-        $this->instance = $instance;
+    public function setOutputObject($object) {
+        $this->outputObject = $object;
+        $this->outputClass = get_class($object);
 
         return $this;
     }
@@ -92,32 +90,33 @@ abstract class Mapper implements MapperInterface {
      * @param integer $adapter
      * @return $this
      */
-    private function setAnnotationAdapterType($adapter) {
+    public function setAnnotationAdapterType($adapter) {
         $this->annotationAdapterType = $adapter;
 
         return $this;
     }
 
     /**
-     * @param string|stdClass $toMap
+     * @param string|object $outputClassOrObject
      * @param integer $adapter
-     * @throws InvalidValueToMap
      */
-    public function __construct($toMap, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
-        if (is_object($toMap)) {
-            $instance = $toMap;
-            $class = get_class($instance);
-        } elseif(is_string($toMap) && class_exists($toMap)) {
-            $class = $toMap;
-            $instance = new $class();
+    public function __construct($outputClassOrObject, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
+        $this->setOutputClassOrObject($outputClassOrObject)
+            ->setAnnotationAdapterType($adapter);
+    }
+
+    /**
+     * @param string|object $outputClassOrObject
+     * @return $this
+     */
+    private function setOutputClassOrObject($outputClassOrObject) {
+        if (is_object($outputClassOrObject)) {
+            $this->setOutputObject($outputClassOrObject);
         } else {
-            throw new InvalidValueToMap($toMap);
+            $this->setOutputClass($outputClassOrObject);
         }
 
-        $this
-            ->setClass($class)
-            ->setInstance($instance)
-            ->setAnnotationAdapterType($adapter);
+        return $this;
     }
 
 }

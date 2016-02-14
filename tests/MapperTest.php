@@ -10,8 +10,8 @@ use \stdClass,
     \Tests\Dummy\Leaf,
 
     \PhMap\Mapper,
-    \PhMap\Mapper\Json,
-    \PhMap\Mapper\Smart,
+    \PhMap\Wrapper\Json,
+    \PhMap\Wrapper\Smart,
     \PhMap\Mapper\Structure\Object,
     \PhMap\Mapper\Structure\Associative;
 
@@ -287,18 +287,6 @@ class MapperTest extends TestCase {
         $adapter = 10;
 
         (new Object(self::getTreeDecodedToObject(), $class, $adapter))
-            ->map();
-    }
-
-    public function testInvalidValueToMapInvalidClassName() {
-        $class = '\Tests\Dummy\InvalidClass';
-
-        $this->setExpectedException(
-            '\PhMap\Exception\InvalidValueToMap',
-            'Value "' . $class . '" cannot be mapped. Must be an instance or valid class name'
-        );
-
-        (new Object(self::getTreeDecodedToObject(), $class, Mapper::FILES_ANNOTATION_ADAPTER))
             ->map();
     }
 
