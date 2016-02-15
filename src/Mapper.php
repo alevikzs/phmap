@@ -4,6 +4,7 @@ namespace PhMap;
 
 /**
  * Class Mapper
+ * @abstract
  * @package PhMap
  */
 abstract class Mapper implements MapperInterface {
@@ -54,7 +55,7 @@ abstract class Mapper implements MapperInterface {
      * @param string $class
      * @return $this
      */
-    public function setOutputClass($class) {
+    protected function setOutputClassInternal($class) {
         $this->outputClass = $class;
         $this->outputObject = new $class();
 
@@ -72,7 +73,7 @@ abstract class Mapper implements MapperInterface {
      * @param object $object
      * @return $this
      */
-    public function setOutputObject($object) {
+    protected function setOutputObjectInternal($object) {
         $this->outputObject = $object;
         $this->outputClass = get_class($object);
 
@@ -111,9 +112,9 @@ abstract class Mapper implements MapperInterface {
      */
     private function setOutputClassOrObject($outputClassOrObject) {
         if (is_object($outputClassOrObject)) {
-            $this->setOutputObject($outputClassOrObject);
+            $this->setOutputObjectInternal($outputClassOrObject);
         } else {
-            $this->setOutputClass($outputClassOrObject);
+            $this->setOutputClassInternal($outputClassOrObject);
         }
 
         return $this;

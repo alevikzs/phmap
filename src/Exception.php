@@ -6,8 +6,9 @@ use \Exception as BaseException;
 
 /**
  * Class Exception
+ * @abstract
  * @package PhMap
  */
-class Exception extends BaseException {
+abstract class Exception extends BaseException {
 
 }

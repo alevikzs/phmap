@@ -4,6 +4,7 @@ namespace PhMap;
 
 /**
  * Class Wrapper
+ * @abstract
  * @package PhMap
  */
 abstract class Wrapper implements MapperInterface {

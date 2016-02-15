@@ -20,6 +20,7 @@ use \Phalcon\Annotations\Annotation,
 
 /**
  * Class Structure
+ * @abstract
  * @package PhMap\Mapper
  */
 abstract class Structure extends Mapper {
@@ -99,10 +100,30 @@ abstract class Structure extends Mapper {
             parent::setAnnotationAdapterType($adapter);
 
             $this->createAnnotationAdapter()
-                ->createReflector();
+                ->updateReflector();
         }
 
         return $this;
+    }
+
+    /**
+     * @param string $class
+     * @return $this
+     */
+    public function setOutputClass($class) {
+        parent::setOutputClassInternal($class);
+
+        return $this->updateReflector();
+    }
+
+    /**
+     * @param object $object
+     * @return $this
+     */
+    public function setOutputObject($object) {
+        parent::setOutputObjectInternal($object);
+
+        return $this->updateReflector();
     }
 
     /**
@@ -120,7 +141,7 @@ abstract class Structure extends Mapper {
         $this
             ->setInputStructure($inputStructure)
             ->createAnnotationAdapter()
-            ->createReflector();
+            ->updateReflector();
     }
 
     /**
@@ -161,7 +182,7 @@ abstract class Structure extends Mapper {
     /**
      * @return $this
      */
-    private function createReflector() {
+    protected function updateReflector() {
         return $this->setReflector(
             $this->getAnnotationAdapter()
                 ->get($this->getOutputClass())

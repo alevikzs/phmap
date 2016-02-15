@@ -26,7 +26,7 @@ class Object extends Structure {
     /**
      * @return object
      */
-    protected function getInputObject() {
+    public function getInputObject() {
         return $this->getInputStructure();
     }
 
@@ -34,7 +34,7 @@ class Object extends Structure {
      * @param object $object
      * @return $this
      */
-    protected function setInputObject($object) {
+    public function setInputObject($object) {
         return $this->setInputStructure($object);
     }
 

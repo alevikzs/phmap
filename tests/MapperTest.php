@@ -28,23 +28,36 @@ class MapperTest extends TestCase {
         static $tree;
 
         if (!$tree) {
-            $tree = new Tree(2, 'Pear', new Branch(1, [new Leaf(2, 3), new Leaf(1, 2)]));
+            $tree = new Tree(2, 'Pear', self::getBranch());
         }
 
         return $tree;
     }
 
     /**
+     * @return Branch
+     */
+    private static function getBranch() {
+        static $branch;
+
+        if (!$branch) {
+            $branch = new Branch(1, [new Leaf(2, 3), new Leaf(1, 2)]);
+        }
+
+        return $branch;
+    }
+
+    /**
      * @return string
      */
     private static function getTreeJson() {
-        static $value;
+        static $treeJson;
 
-        if (!$value) {
-            $value = json_encode(self::getTree());
+        if (!$treeJson) {
+            $treeJson = json_encode(self::getTree());
         }
 
-        return $value;
+        return $treeJson;
     }
 
     /**
@@ -59,6 +72,33 @@ class MapperTest extends TestCase {
      */
     private static function getTreeDecodedToArray() {
         return json_decode(self::getTreeJson(), true);
+    }
+
+    /**
+     * @return string
+     */
+    private static function getBranchJson() {
+        static $branchJson;
+
+        if (!$branchJson) {
+            $branchJson = json_encode(self::getBranch());
+        }
+
+        return $branchJson;
+    }
+
+    /**
+     * @return stdClass
+     */
+    private static function getBranchDecodedToObject() {
+        return json_decode(self::getBranchJson());
+    }
+
+    /**
+     * @return array
+     */
+    private static function getBranchDecodedToArray() {
+        return json_decode(self::getBranchJson(), true);
     }
 
     public function testMapperWithMemoryAdapter() {
@@ -132,6 +172,64 @@ class MapperTest extends TestCase {
         $this->assertEquals($objectMapped, self::getTree());
 
         $objectMapped = (new Tree())->map(self::getTreeJson(), Mapper::FILES_ANNOTATION_ADAPTER);
+        $this->assertEquals($objectMapped, self::getTree());
+    }
+
+    public function testReusable() {
+        $mapper = new Json(self::getTreeJson(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER);
+
+        $objectMapped = $mapper->map();
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = $mapper
+            ->setInputJsonString(self::getBranchJson())
+            ->setOutputObject(new Branch())
+            ->map();
+        $this->assertEquals($objectMapped, self::getBranch());
+
+        $mapper = new Object(self::getTreeDecodedToObject(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER);
+
+        $objectMapped = $mapper->map();
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = $mapper
+            ->setInputObject(self::getBranchDecodedToObject())
+            ->setOutputObject(new Branch())
+            ->map();
+
+        $this->assertEquals($objectMapped, self::getBranch());
+
+        $mapper = new Associative(self::getTreeDecodedToArray(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER);
+
+        $objectMapped = $mapper->map();
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = $mapper
+            ->setInputArray(self::getBranchDecodedToArray())
+            ->setOutputObject(new Branch())
+            ->map();
+
+        $this->assertEquals($objectMapped, self::getBranch());
+
+        $mapper = new Smart(self::getTreeDecodedToArray(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER);
+
+        $objectMapped = $mapper->map();
+        $this->assertEquals($objectMapped, self::getTree());
+
+        $objectMapped = $mapper
+            ->setInputValue(self::getBranchJson())
+            ->setOutputObject(new Branch())
+            ->setAnnotationAdapterType(Mapper::MEMORY_ANNOTATION_ADAPTER)
+            ->map();
+
+        $this->assertEquals($objectMapped, self::getBranch());
+
+        $objectMapped = $mapper
+            ->setInputValue(self::getTreeDecodedToObject())
+            ->setOutputObject(new Tree())
+            ->setAnnotationAdapterType(Mapper::FILES_ANNOTATION_ADAPTER)
+            ->map();
+
         $this->assertEquals($objectMapped, self::getTree());
     }
 

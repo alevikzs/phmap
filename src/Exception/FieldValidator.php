@@ -6,6 +6,7 @@ use \PhMap\Exception;
 
 /**
  * Class FieldValidator
+ * @abstract
  * @package PhMap\Exception
  */
 abstract class FieldValidator extends Exception {

@@ -26,7 +26,7 @@ class Associative extends Structure {
     /**
      * @return array
      */
-    protected function getInputArray() {
+    public function getInputArray() {
         return $this->getInputStructure();
     }
 
@@ -34,7 +34,7 @@ class Associative extends Structure {
      * @param array $array
      * @return $this
      */
-    protected function setInputObject(array $array) {
+    public function setInputArray(array $array) {
         return $this->setInputStructure($array);
     }
 
