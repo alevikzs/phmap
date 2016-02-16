@@ -30,6 +30,11 @@ class Tree implements JsonSerializable {
     private $branch;
 
     /**
+     * @var Branch
+     */
+    private $something;
+
+    /**
      * @return float
      */
     public function getHeight() {
@@ -81,6 +86,7 @@ class Tree implements JsonSerializable {
         $this->height = $height;
         $this->name = $name;
         $this->branch = $branch;
+        $this->something = 'something';
     }
 
     /**

@@ -388,4 +388,10 @@ class MapperTest extends TestCase {
             ->map();
     }
 
+    public function testMappingObjectWithPrivateFields() {
+        $objectMapped = (new Object(self::getTree(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+    }
+
 }

@@ -198,7 +198,7 @@ abstract class Structure extends Mapper {
             ->getReflector()
             ->getMethodsAnnotations();
 
-        foreach ($this->getInputStructure() as $attribute => $value) {
+        foreach ($this->getInputAttributes() as $attribute => $value) {
             $setter = $this->createSetter($attribute);
 
             if ($this->hasAttribute($attribute)) {
@@ -306,5 +306,10 @@ abstract class Structure extends Mapper {
      * @return boolean
      */
     abstract protected function isStructure($value);
+
+    /**
+     * @return array
+     */
+    abstract protected function getInputAttributes();
 
 }

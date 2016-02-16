@@ -2,7 +2,9 @@
 
 namespace PhMap\Mapper\Structure;
 
-use \PhMap\Mapper\Structure;
+use \ReflectionClass,
+
+    \PhMap\Mapper\Structure;
 
 /**
  * Class Object
@@ -60,6 +62,35 @@ class Object extends Structure {
      */
     protected function isStructure($value) {
         return $this->isObject($value) || $this->isSequential($value);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getInputAttributes() {
+        $reflectionClass = new ReflectionClass(get_class($this->getInputObject()));
+
+        $attributes = [];
+
+        foreach ($reflectionClass->getProperties() as $property) {
+            $value = null;
+
+            if ($property->isPublic()) {
+                $value = $property->getValue($this->getInputObject());
+            } else {
+                $getter = $this->createGetter($property->getName());
+
+                if ($reflectionClass->hasMethod($getter)) {
+                    $value = $this->getInputObject()->$getter();
+                }
+            }
+
+            if ($value) {
+                $attributes[$property->getName()] = $value;
+            }
+        }
+
+        return $attributes;
     }
 
 }

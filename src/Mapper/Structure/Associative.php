@@ -62,4 +62,11 @@ class Associative extends Structure {
         return is_array($value);
     }
 
+    /**
+     * @return array
+     */
+    protected function getInputAttributes() {
+        return $this->getInputStructure();
+    }
+
 }
