@@ -68,7 +68,11 @@ class Object extends Structure {
      * @return array
      */
     protected function getInputAttributes() {
-        $reflectionClass = new ReflectionClass(get_class($this->getInputObject()));
+        if ($this->isInputStandardClass()) {
+            return $this->getInputObject();
+        }
+
+        $reflectionClass = new ReflectionClass($this->getInputClass());
 
         $attributes = [];
 
@@ -91,6 +95,20 @@ class Object extends Structure {
         }
 
         return $attributes;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInputClass() {
+        return get_class($this->getInputObject());
+    }
+
+    /**
+     * @return boolean
+     */
+    protected function isInputStandardClass() {
+        return $this->getInputClass() === 'stdClass';
     }
 
 }
