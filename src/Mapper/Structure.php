@@ -190,28 +190,40 @@ abstract class Structure extends Mapper {
     }
 
     /**
+     * @param array $transforms
      * @return object
      * @throws UnknownFieldException
      */
-    public function map() {
+    public function map(array $transforms = []) {
         $methodsAnnotations = $this
             ->getReflector()
             ->getMethodsAnnotations();
 
         foreach ($this->getInputAttributes() as $attribute => $value) {
-            $setter = $this->createSetter($attribute);
+            $transformedAttribute = isset($transforms[$attribute]['attribute'])
+                ? $transforms[$attribute]['attribute'] : $attribute;
 
-            if ($this->hasAttribute($attribute)) {
+            $setter = $this->createSetter($transformedAttribute);
+
+            if ($this->hasAttribute($transformedAttribute)) {
                 /** @var Annotations $methodAnnotations */
                 $methodAnnotations = $methodsAnnotations[$setter];
 
-                $valueToMap = $this->buildValueToMap($attribute, $value, $methodAnnotations);
+                $childTransforms = isset($transforms[$attribute]['transforms'])
+                    ? $transforms[$attribute]['transforms'] : [];
+
+                $valueToMap = $this->buildValueToMap(
+                    $transformedAttribute,
+                    $value,
+                    $methodAnnotations,
+                    $childTransforms
+                );
 
                 $this
                     ->getOutputObject()
                     ->$setter($valueToMap);
             } else {
-                throw new UnknownFieldException($attribute, $this->getOutputClass());
+                throw new UnknownFieldException($transformedAttribute, $this->getOutputClass());
             }
         }
 
@@ -222,12 +234,13 @@ abstract class Structure extends Mapper {
      * @param string $attribute
      * @param mixed $value
      * @param Annotations $methodAnnotations
+     * @param array $transforms
      * @return mixed
      * @throws MustBeSimpleException
      * @throws MustBeSequenceException
      * @throws MustBeObjectException
      */
-    protected function buildValueToMap($attribute, $value, Annotations $methodAnnotations) {
+    protected function buildValueToMap($attribute, $value, Annotations $methodAnnotations, array $transforms = []) {
         $valueToMap = $value;
 
         if ($methodAnnotations->has('mapper')) {
@@ -242,13 +255,13 @@ abstract class Structure extends Mapper {
                 } else {
                     /** @var object|array $value */
                     $mapper = new static($value, $mapperAnnotationClass);
-                    $valueToMap = $mapper->map();
+                    $valueToMap = $mapper->map($transforms);
                 }
             } else {
                 if ($mapperAnnotationIsArray) {
-                    $valueToMap = array_map(function($val) use ($mapperAnnotationClass) {
+                    $valueToMap = array_map(function($val) use ($mapperAnnotationClass, $transforms) {
                         return (new static($val, $mapperAnnotationClass))
-                            ->map();
+                            ->map($transforms);
                     }, $value);
                 } else {
                     throw new MustBeObjectException($attribute, $this->getOutputClass());

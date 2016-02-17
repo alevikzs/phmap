@@ -96,14 +96,6 @@ class Json extends Wrapper {
     }
 
     /**
-     * @return object
-     */
-    public function map() {
-        return $this->getMapper()
-            ->map();
-    }
-
-    /**
      * @param string|object $outputClassOrObject
      * @param integer $adapter
      * @return $this

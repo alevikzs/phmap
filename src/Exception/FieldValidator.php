@@ -42,7 +42,7 @@ abstract class FieldValidator extends Exception {
      * @return string
      */
     public function getClass() {
-        return $this->field;
+        return $this->class;
     }
 
     /**

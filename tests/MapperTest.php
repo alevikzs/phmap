@@ -394,4 +394,30 @@ class MapperTest extends TestCase {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    public function testTransforms() {
+        $inputStructure = self::getTreeDecodedToArray();
+        $inputStructure['nameTransformed'] = $inputStructure['name'];
+        unset($inputStructure['name']);
+        $inputStructure['branch']['leavesTransformed'] = $inputStructure['branch']['leaves'];
+        unset($inputStructure['branch']['leaves']);
+        $inputStructure['branchTransformed'] = $inputStructure['branch'];
+        unset($inputStructure['branch']);
+
+        $objectMapped = (new Associative($inputStructure, new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map([
+                'nameTransformed' => [
+                    'attribute' => 'name',
+                ],
+                'branchTransformed' => [
+                    'attribute' => 'branch',
+                    'transforms' => [
+                        'leavesTransformed' => [
+                            'attribute' => 'leaves'
+                        ]
+                    ]
+                ]
+            ]);
+        $this->assertEquals($objectMapped, self::getTree());
+    }
+
 }

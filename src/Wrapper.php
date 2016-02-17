@@ -85,6 +85,15 @@ abstract class Wrapper implements MapperInterface {
     }
 
     /**
+     * @param array $transforms
+     * @return object
+     */
+    public function map(array $transforms = []) {
+        return $this->getMapper()
+            ->map($transforms);
+    }
+
+    /**
      * @param string|object $outputClassOrObject
      * @param integer $adapter
      * @return $this
