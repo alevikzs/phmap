@@ -70,10 +70,10 @@ class Tree implements JsonSerializable {
     }
 
     /**
-     * @param Branch $branch
+     * @param Branch|null $branch
      * @mapper(class="\Tests\Dummy\Branch")
      */
-    public function setBranch(Branch $branch) {
+    public function setBranch(Branch $branch = null) {
         $this->branch = $branch;
     }
 

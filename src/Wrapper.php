@@ -85,12 +85,13 @@ abstract class Wrapper implements MapperInterface {
     }
 
     /**
+     * @param boolean $validation
      * @param array $transforms
      * @return object
      */
-    public function map(array $transforms = []) {
+    public function map(array $transforms = [], $validation = true) {
         return $this->getMapper()
-            ->map($transforms);
+            ->map($transforms, $validation);
     }
 
     /**

@@ -31,7 +31,7 @@ class MapperTest extends TestCase {
             $tree = new Tree(2, 'Pear', self::getBranch());
         }
 
-        return $tree;
+        return clone $tree;
     }
 
     /**
@@ -41,10 +41,23 @@ class MapperTest extends TestCase {
         static $branch;
 
         if (!$branch) {
-            $branch = new Branch(1, [new Leaf(2, 3), new Leaf(1, 2)]);
+            $branch = new Branch(1, [self::getLeaf(), self::getLeaf()]);
         }
 
-        return $branch;
+        return clone $branch;
+    }
+
+    /**
+     * @return Branch
+     */
+    private static function getLeaf() {
+        static $leaf;
+
+        if (!$leaf) {
+            $leaf = new Leaf(2, 3);
+        }
+
+        return clone $leaf;
     }
 
     /**
@@ -233,6 +246,38 @@ class MapperTest extends TestCase {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    public function testMappingObjectWithPrivateFields() {
+        $objectMapped = (new Object(self::getTree(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map();
+        $this->assertEquals($objectMapped, self::getTree());
+    }
+
+    public function testTransforms() {
+        $inputStructure = self::getTreeDecodedToArray();
+        $inputStructure['nameTransformed'] = $inputStructure['name'];
+        unset($inputStructure['name']);
+        $inputStructure['branch']['leavesTransformed'] = $inputStructure['branch']['leaves'];
+        unset($inputStructure['branch']['leaves']);
+        $inputStructure['branchTransformed'] = $inputStructure['branch'];
+        unset($inputStructure['branch']);
+
+        $objectMapped = (new Associative($inputStructure, new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map([
+                'nameTransformed' => [
+                    'attribute' => 'name',
+                ],
+                'branchTransformed' => [
+                    'attribute' => 'branch',
+                    'transforms' => [
+                        'leavesTransformed' => [
+                            'attribute' => 'leaves'
+                        ]
+                    ]
+                ]
+            ]);
+        $this->assertEquals($objectMapped, self::getTree());
+    }
+
     public function testMustBeSimpleExceptionForObjectStructure() {
         $this->setExpectedException('\PhMap\Exception\FieldValidator\MustBeSimple');
 
@@ -388,36 +433,112 @@ class MapperTest extends TestCase {
             ->map();
     }
 
-    public function testMappingObjectWithPrivateFields() {
-        $objectMapped = (new Object(self::getTree(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map();
-        $this->assertEquals($objectMapped, self::getTree());
+    public function testDisableMustBeSimpleExceptionForObjectStructure() {
+        $class = '\Tests\Dummy\Tree';
+
+        $object = self::getTreeDecodedToObject();
+
+        $height = new stdClass();
+        $height->foo = 1;
+        $height->bar = 2;
+
+        $object->height = $height;
+
+        $objectMapped = (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map([], false);
+        $objectExpected = self::getTree();
+        $objectExpected->setHeight(null);
+        $this->assertEquals($objectMapped, $objectExpected);
     }
 
-    public function testTransforms() {
-        $inputStructure = self::getTreeDecodedToArray();
-        $inputStructure['nameTransformed'] = $inputStructure['name'];
-        unset($inputStructure['name']);
-        $inputStructure['branch']['leavesTransformed'] = $inputStructure['branch']['leaves'];
-        unset($inputStructure['branch']['leaves']);
-        $inputStructure['branchTransformed'] = $inputStructure['branch'];
-        unset($inputStructure['branch']);
+    public function testDisableMustBeSimpleExceptionForAssociativeStructure() {
+        $class = '\Tests\Dummy\Tree';
 
-        $objectMapped = (new Associative($inputStructure, new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map([
-                'nameTransformed' => [
-                    'attribute' => 'name',
-                ],
-                'branchTransformed' => [
-                    'attribute' => 'branch',
-                    'transforms' => [
-                        'leavesTransformed' => [
-                            'attribute' => 'leaves'
-                        ]
-                    ]
-                ]
-            ]);
-        $this->assertEquals($objectMapped, self::getTree());
+        $array = self::getTreeDecodedToArray();
+
+        $array['height'] = [
+            'foo' => 1,
+            'bar' => 2
+        ];
+
+        $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map([], false);
+        $objectExpected = self::getTree();
+        $objectExpected->setHeight(null);
+        $this->assertEquals($objectMapped, $objectExpected);
+    }
+
+    public function testDisableMustBeSequenceExceptionForObjectStructure() {
+        $class = '\Tests\Dummy\Tree';
+
+        $object = self::getTreeDecodedToObject();
+
+        $object->branch->leaves = new stdClass();
+
+        $objectMapped = (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map([], false);
+        $objectExpected = self::getTree();
+        $objectExpected->getBranch()->setLeaves([]);
+        $this->assertEquals($objectMapped, $objectExpected);
+    }
+
+    public function testDisableMustBeSequenceExceptionForAssociativeStructure() {
+        $class = '\Tests\Dummy\Tree';
+
+        $array = self::getTreeDecodedToArray();
+
+        $array['branch'] = [
+            'leaves' => ['foo' => 1]
+        ];
+
+        $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map([], false);
+        $objectExpected = self::getTree();
+        $objectExpected->setBranch(new Branch());
+        $this->assertEquals($objectMapped, $objectExpected);
+    }
+
+    public function testDisableMustBeObjectExceptionForObjectStructure() {
+        $class = '\Tests\Dummy\Tree';
+
+        $object = self::getTreeDecodedToObject();
+
+        $object->branch = 1;
+
+        $objectMapped = (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map([], false);
+        $objectExpected = self::getTree();
+        $objectExpected->setBranch(null);
+        $this->assertEquals($objectMapped, $objectExpected);
+    }
+
+    public function testDisableMustBeObjectExceptionForAssociativeStructure() {
+        $class = '\Tests\Dummy\Tree';
+
+        $array = self::getTreeDecodedToArray();
+
+        $array['branch'] = 1;
+
+        $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map([], false);
+        $objectExpected = self::getTree();
+        $objectExpected->setBranch(null);
+        $this->assertEquals($objectMapped, $objectExpected);
+    }
+
+    public function testDisableUnknownFieldExceptionForAssociativeStructure() {
+        $this->setExpectedException('\PhMap\Exception\FieldValidator\UnknownField');
+
+        $class = '\Tests\Dummy\Tree';
+
+        $array = self::getTreeDecodedToArray();
+
+        $array['foo'] = 1;
+
+        $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->map();
+        $objectExpected = self::getTree();
+        $this->assertEquals($objectMapped, $objectExpected);
     }
 
 }

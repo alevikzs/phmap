@@ -190,11 +190,12 @@ abstract class Structure extends Mapper {
     }
 
     /**
+     * @param boolean $validation
      * @param array $transforms
      * @return object
      * @throws UnknownFieldException
      */
-    public function map(array $transforms = []) {
+    public function map(array $transforms = [], $validation = true) {
         $methodsAnnotations = $this
             ->getReflector()
             ->getMethodsAnnotations();
@@ -216,13 +217,16 @@ abstract class Structure extends Mapper {
                     $transformedAttribute,
                     $value,
                     $methodAnnotations,
-                    $childTransforms
+                    $childTransforms,
+                    $validation
                 );
 
-                $this
-                    ->getOutputObject()
-                    ->$setter($valueToMap);
-            } else {
+                if (!is_null($valueToMap)) {
+                    $this
+                        ->getOutputObject()
+                        ->$setter($valueToMap);
+                }
+            } elseif ($validation) {
                 throw new UnknownFieldException($transformedAttribute, $this->getOutputClass());
             }
         }
@@ -235,12 +239,19 @@ abstract class Structure extends Mapper {
      * @param mixed $value
      * @param Annotations $methodAnnotations
      * @param array $transforms
+     * @param boolean $validation
      * @return mixed
      * @throws MustBeSimpleException
      * @throws MustBeSequenceException
      * @throws MustBeObjectException
      */
-    protected function buildValueToMap($attribute, $value, Annotations $methodAnnotations, array $transforms = []) {
+    protected function buildValueToMap(
+        $attribute,
+        $value,
+        Annotations $methodAnnotations,
+        array $transforms = [],
+        $validation = true
+    ) {
         $valueToMap = $value;
 
         if ($methodAnnotations->has('mapper')) {
@@ -251,24 +262,34 @@ abstract class Structure extends Mapper {
 
             if ($this->isObject($value)) {
                 if ($mapperAnnotationIsArray) {
-                    throw new MustBeSequenceException($attribute, $this->getOutputClass());
+                    if ($validation) {
+                        throw new MustBeSequenceException($attribute, $this->getOutputClass());
+                    } else {
+                        $valueToMap = null;
+                    }
                 } else {
                     /** @var object|array $value */
                     $mapper = new static($value, $mapperAnnotationClass);
-                    $valueToMap = $mapper->map($transforms);
+                    $valueToMap = $mapper->map($transforms, $validation);
                 }
             } else {
                 if ($mapperAnnotationIsArray) {
-                    $valueToMap = array_map(function($val) use ($mapperAnnotationClass, $transforms) {
+                    $valueToMap = array_map(function($val) use ($mapperAnnotationClass, $transforms, $validation) {
                         return (new static($val, $mapperAnnotationClass))
-                            ->map($transforms);
+                            ->map($transforms, $validation);
                     }, $value);
-                } else {
+                } elseif ($validation) {
                     throw new MustBeObjectException($attribute, $this->getOutputClass());
+                } else {
+                    $valueToMap = null;
                 }
             }
         } elseif ($this->isStructure($value)) {
-            throw new MustBeSimpleException($attribute, $this->getOutputClass());
+            if ($validation) {
+                throw new MustBeSimpleException($attribute, $this->getOutputClass());
+            } else {
+                $valueToMap = null;
+            }
         }
 
         return $valueToMap;
