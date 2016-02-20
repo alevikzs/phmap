@@ -43,9 +43,9 @@ interface MapperInterface {
 
     /**
      * @param boolean $validation
-     * @param array $transforms
+     * @param Transforms|null $transforms
      * @return object
      */
-    public function map(array $transforms = [], $validation = true);
+    public function map(Transforms $transforms = null, $validation = true);
 
 }

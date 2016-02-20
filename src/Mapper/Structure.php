@@ -12,6 +12,7 @@ use \Phalcon\Annotations\Annotation,
     \Phalcon\Annotations\Adapter\Xcache,
 
     \PhMap\Mapper,
+    \PhMap\Transforms,
     \PhMap\Exception\UnknownAnnotationAdapter,
     \PhMap\Exception\FieldValidator\UnknownField as UnknownFieldException,
     \PhMap\Exception\FieldValidator\MustBeSimple as MustBeSimpleException,
@@ -191,18 +192,18 @@ abstract class Structure extends Mapper {
 
     /**
      * @param boolean $validation
-     * @param array $transforms
+     * @param Transforms|null $transforms
      * @return object
      * @throws UnknownFieldException
      */
-    public function map(array $transforms = [], $validation = true) {
+    public function map(Transforms $transforms = null, $validation = true) {
         $methodsAnnotations = $this
             ->getReflector()
             ->getMethodsAnnotations();
 
         foreach ($this->getInputAttributes() as $attribute => $value) {
-            $transformedAttribute = isset($transforms[$attribute]['attribute'])
-                ? $transforms[$attribute]['attribute'] : $attribute;
+            $transform = $transforms ? $transforms->findByInputFieldName($attribute) : null;
+            $transformedAttribute = $transform ? $transform->getOutputFieldName() : $attribute;
 
             $setter = $this->createSetter($transformedAttribute);
 
@@ -210,8 +211,7 @@ abstract class Structure extends Mapper {
                 /** @var Annotations $methodAnnotations */
                 $methodAnnotations = $methodsAnnotations[$setter];
 
-                $childTransforms = isset($transforms[$attribute]['transforms'])
-                    ? $transforms[$attribute]['transforms'] : [];
+                $childTransforms = $transform ? $transform->getTransforms() : null;
 
                 $valueToMap = $this->buildValueToMap(
                     $transformedAttribute,
@@ -238,7 +238,7 @@ abstract class Structure extends Mapper {
      * @param string $attribute
      * @param mixed $value
      * @param Annotations $methodAnnotations
-     * @param array $transforms
+     * @param Transforms|null $transforms
      * @param boolean $validation
      * @return mixed
      * @throws MustBeSimpleException
@@ -249,7 +249,7 @@ abstract class Structure extends Mapper {
         $attribute,
         $value,
         Annotations $methodAnnotations,
-        array $transforms = [],
+        Transforms $transforms = null,
         $validation = true
     ) {
         $valueToMap = $value;

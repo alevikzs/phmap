@@ -10,6 +10,8 @@ use \stdClass,
     \Tests\Dummy\Leaf,
 
     \PhMap\Mapper,
+    \PhMap\Transform,
+    \PhMap\Transforms,
     \PhMap\Wrapper\Json,
     \PhMap\Wrapper\Smart,
     \PhMap\Mapper\Structure\Object,
@@ -261,20 +263,21 @@ class MapperTest extends TestCase {
         $inputStructure['branchTransformed'] = $inputStructure['branch'];
         unset($inputStructure['branch']);
 
+        $transforms = (new Transforms())
+            ->add(
+                (new Transform())->setInputFieldName('nameTransformed')->setOutputFieldName('name')
+            )
+            ->add(
+                (new Transform())->setInputFieldName('branchTransformed')->setOutputFieldName('branch')
+                    ->setTransforms(
+                        (new Transforms())->add(
+                            (new Transform())->setInputFieldName('leavesTransformed')->setOutputFieldName('leaves')
+                        )
+                    )
+            );
+
         $objectMapped = (new Associative($inputStructure, new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map([
-                'nameTransformed' => [
-                    'attribute' => 'name',
-                ],
-                'branchTransformed' => [
-                    'attribute' => 'branch',
-                    'transforms' => [
-                        'leavesTransformed' => [
-                            'attribute' => 'leaves'
-                        ]
-                    ]
-                ]
-            ]);
+            ->map($transforms);
         $this->assertEquals($objectMapped, self::getTree());
     }
 
@@ -445,7 +448,7 @@ class MapperTest extends TestCase {
         $object->height = $height;
 
         $objectMapped = (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map([], false);
+            ->map(null, false);
         $objectExpected = self::getTree();
         $objectExpected->setHeight(null);
         $this->assertEquals($objectMapped, $objectExpected);
@@ -462,7 +465,7 @@ class MapperTest extends TestCase {
         ];
 
         $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map([], false);
+            ->map(null, false);
         $objectExpected = self::getTree();
         $objectExpected->setHeight(null);
         $this->assertEquals($objectMapped, $objectExpected);
@@ -476,7 +479,7 @@ class MapperTest extends TestCase {
         $object->branch->leaves = new stdClass();
 
         $objectMapped = (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map([], false);
+            ->map(null, false);
         $objectExpected = self::getTree();
         $objectExpected->getBranch()->setLeaves([]);
         $this->assertEquals($objectMapped, $objectExpected);
@@ -492,7 +495,7 @@ class MapperTest extends TestCase {
         ];
 
         $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map([], false);
+            ->map(null, false);
         $objectExpected = self::getTree();
         $objectExpected->setBranch(new Branch());
         $this->assertEquals($objectMapped, $objectExpected);
@@ -506,7 +509,7 @@ class MapperTest extends TestCase {
         $object->branch = 1;
 
         $objectMapped = (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map([], false);
+            ->map(null, false);
         $objectExpected = self::getTree();
         $objectExpected->setBranch(null);
         $this->assertEquals($objectMapped, $objectExpected);
@@ -520,7 +523,7 @@ class MapperTest extends TestCase {
         $array['branch'] = 1;
 
         $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map([], false);
+            ->map(null, false);
         $objectExpected = self::getTree();
         $objectExpected->setBranch(null);
         $this->assertEquals($objectMapped, $objectExpected);
