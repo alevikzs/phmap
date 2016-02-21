@@ -17,7 +17,7 @@ class Tree implements JsonSerializable {
     /**
      * @var double
      */
-    private $height;
+    public $height;
 
     /**
      * @var string

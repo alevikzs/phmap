@@ -66,7 +66,7 @@ class Associative extends Structure {
      * @return array
      */
     protected function getInputAttributes() {
-        return $this->getInputStructure();
+        return $this->getInputArray();
     }
 
 }

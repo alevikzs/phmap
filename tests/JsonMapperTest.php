@@ -5,7 +5,6 @@ namespace Tests;
 use \stdClass,
 
     \Tests\Dummy\Tree,
-    \Tests\Dummy\Branch,
 
     \PhMap\Mapper,
     \PhMap\Transform,
@@ -51,9 +50,11 @@ class JsonMapperTest extends MapperTest {
     }
 
     public function testMapperWithInstances() {
+        $mapper = new Json(self::getTreeJson(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER);
         /** @var Tree $objectMapped */
-        $objectMapped = (new Json(self::getTreeJson(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map();
+        $objectMapped = $mapper->map();
+
+        $this->assertEquals($mapper->getOutputClass(), 'Tests\Dummy\Tree');
         $this->assertEquals($objectMapped, self::getTree());
     }
 
@@ -63,9 +64,10 @@ class JsonMapperTest extends MapperTest {
         $objectMapped = $mapper->map();
         $this->assertEquals($objectMapped, self::getTree());
 
+        $class = '\Tests\Dummy\Branch';
         $objectMapped = $mapper
             ->setInputJsonString(self::getBranchJson())
-            ->setOutputObject(new Branch())
+            ->setOutputClass($class)
             ->setAnnotationAdapterType(Mapper::FILES_ANNOTATION_ADAPTER)
             ->map();
         $this->assertEquals($objectMapped, self::getBranch());

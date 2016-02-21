@@ -75,7 +75,6 @@ class SmartMapperTest extends MapperTest {
             ->setOutputObject(new Branch())
             ->setAnnotationAdapterType(Mapper::MEMORY_ANNOTATION_ADAPTER)
             ->map();
-
         $this->assertEquals($objectMapped, self::getBranch());
 
         $objectMapped = $mapper
@@ -83,7 +82,6 @@ class SmartMapperTest extends MapperTest {
             ->setOutputObject(new Tree())
             ->setAnnotationAdapterType(Mapper::FILES_ANNOTATION_ADAPTER)
             ->map();
-
         $this->assertEquals($objectMapped, self::getTree());
     }
 
