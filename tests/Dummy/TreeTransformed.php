@@ -10,7 +10,7 @@ use \JsonSerializable,
  * Class Tree
  * @package Tests\Dummy
  */
-class Tree implements JsonSerializable {
+class TreeTransformed implements JsonSerializable {
 
     use MapperTrait;
 
@@ -22,12 +22,12 @@ class Tree implements JsonSerializable {
     /**
      * @var string
      */
-    private $name;
+    private $nameTransformed;
 
     /**
      * @var Branch
      */
-    private $branch;
+    private $branchTransformed;
 
     /**
      * @var Branch
@@ -54,34 +54,34 @@ class Tree implements JsonSerializable {
     /**
      * @return string
      */
-    public function getName() {
-        return $this->name;
+    public function getNameTransformed() {
+        return $this->nameTransformed;
     }
 
     /**
      * @param string $name
      * @return $this
      */
-    public function setName($name) {
-        $this->name = $name;
+    public function setNameTransformed($name) {
+        $this->nameTransformed = $name;
 
         return $this;
     }
 
     /**
-     * @return Branch
+     * @return BranchTransformed
      */
-    public function getBranch() {
-        return $this->branch;
+    public function getBranchTransformed() {
+        return $this->branchTransformed;
     }
 
     /**
-     * @param Branch|null $branch
-     * @mapper(class="\Tests\Dummy\Branch")
+     * @param BranchTransformed|null $branch
+     * @mapper(class="\Tests\Dummy\BranchTransformed")
      * @return $this
      */
-    public function setBranch(Branch $branch = null) {
-        $this->branch = $branch;
+    public function setBranchTransformed(BranchTransformed $branch = null) {
+        $this->branchTransformed = $branch;
 
         return $this;
     }
@@ -89,12 +89,12 @@ class Tree implements JsonSerializable {
     /**
      * @param double $height
      * @param string $name
-     * @param Branch $branch
+     * @param BranchTransformed $branch
      */
-    public function __construct($height = null, $name = null, Branch $branch = null) {
+    public function __construct($height = null, $name = null, BranchTransformed $branch = null) {
         $this->height = $height;
-        $this->name = $name;
-        $this->branch = $branch;
+        $this->nameTransformed = $name;
+        $this->branchTransformed = $branch;
         $this->something = 'something';
     }
 
@@ -103,9 +103,9 @@ class Tree implements JsonSerializable {
      */
     public function jsonSerialize() {
         return [
-            'name' => $this->getName(),
+            'nameTransformed' => $this->getNameTransformed(),
             'height' => $this->getHeight(),
-            'branch' => $this->getBranch()
+            'branchTransformed' => $this->getBranchTransformed()
         ];
     }
 

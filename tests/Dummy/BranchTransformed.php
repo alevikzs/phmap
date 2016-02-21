@@ -5,10 +5,10 @@ namespace Tests\Dummy;
 use \JsonSerializable;
 
 /**
- * Class Branch
+ * Class BranchTransformed
  * @package Tests\Dummy
  */
-class Branch implements JsonSerializable {
+class BranchTransformed implements JsonSerializable {
 
     /**
      * @var double
@@ -18,7 +18,7 @@ class Branch implements JsonSerializable {
     /**
      * @var Leaf[]
      */
-    private $leaves;
+    private $leavesTransformed;
 
     /**
      * @return float
@@ -40,8 +40,8 @@ class Branch implements JsonSerializable {
     /**
      * @return Leaf[]
      */
-    public function getLeaves() {
-        return $this->leaves;
+    public function getLeavesTransformed() {
+        return $this->leavesTransformed;
     }
 
     /**
@@ -49,8 +49,8 @@ class Branch implements JsonSerializable {
      * @mapper(class="\Tests\Dummy\Leaf", isArray=true)
      * @return $this
      */
-    public function setLeaves(array $leaves = []) {
-        $this->leaves = $leaves;
+    public function setLeavesTransformed(array $leaves = []) {
+        $this->leavesTransformed = $leaves;
 
         return $this;
     }
@@ -61,7 +61,7 @@ class Branch implements JsonSerializable {
      */
     public function __construct($length = null, array $leaves = []) {
         $this->length = $length;
-        $this->leaves = $leaves;
+        $this->leavesTransformed = $leaves;
     }
 
     /**
@@ -70,7 +70,7 @@ class Branch implements JsonSerializable {
     public function jsonSerialize() {
         return [
             'length' => $this->getLength(),
-            'leaves' => $this->getLeaves()
+            'leaves' => $this->getLeavesTransformed()
         ];
     }
 

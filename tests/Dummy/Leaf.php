@@ -29,9 +29,12 @@ class Leaf implements JsonSerializable {
 
     /**
      * @param float $height
+     * @return $this
      */
     public function setHeight($height) {
         $this->height = $height;
+
+        return $this;
     }
 
     /**
@@ -43,9 +46,12 @@ class Leaf implements JsonSerializable {
 
     /**
      * @param float $width
+     * @return $this
      */
     public function setWidth($width) {
         $this->width = $width;
+
+        return $this;
     }
 
     /**
