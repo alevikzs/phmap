@@ -188,7 +188,7 @@ $transforms = (new \PhMap\Transforms())
     )
     ->add(
         (new \PhMap\Transform())
-            ->setInputFieldName('branchTransformed')
+            ->setInputFieldName('branchIn')
             ->setOutputFieldName('branch')
             ->setTransforms(
                 (new \PhMap\Transforms())->add(
