@@ -144,17 +144,13 @@ but also you can use [file adapter](https://docs.phalconphp.com/en/latest/api/Ph
 [XCache adapter](https://docs.phalconphp.com/en/latest/api/Phalcon_Annotations_Adapter_Xcache.html):
 
 ```php
-$result = (new \PhMap\Mapper\Json($json, 'Tree', \PhMap\Mapper::MEMORY_ANNOTATION_ADAPTER))
-    ->map();
+new \PhMap\Mapper\Json($json, 'Tree', \PhMap\Mapper::MEMORY_ANNOTATION_ADAPTER);
 
-$result = (new \PhMap\Mapper\Smart($json, 'Tree', \PhMap\Mapper::FILES_ANNOTATION_ADAPTER))
-    ->map();
+new \PhMap\Mapper\Smart($json, 'Tree', \PhMap\Mapper::FILES_ANNOTATION_ADAPTER);
 
-$result = (new \PhMap\Mapper\Structure\Associative($array, 'Tree', \PhMap\Mapper::APC_ANNOTATION_ADAPTER))
-    ->map();
+new \PhMap\Mapper\Structure\Associative($array, 'Tree', \PhMap\Mapper::APC_ANNOTATION_ADAPTER);
 
-$result = (new \PhMap\Mapper\Structure\Object($object, 'Tree', \PhMap\Mapper::X_CACHE_ANNOTATION_ADAPTER))
-    ->map();
+new \PhMap\Mapper\Structure\Object($object, 'Tree', \PhMap\Mapper::X_CACHE_ANNOTATION_ADAPTER);
 ```
 
 Also, you can pass already existing object to the constructor:
@@ -175,7 +171,7 @@ $mapper->setInputObject($branch)
     ->setOutputObject(new Branch())
     ->setAnnotationAdapterType(Mapper::MEMORY_ANNOTATION_ADAPTER);
 $result = $mapper->map();
-``
+```
 
 ```map()``` method has two arguments. The first argument is a transforms object. This object is used to declare a set 
 of rules in where each rule indicates what field of input value is correspond to the output field value. The second 
