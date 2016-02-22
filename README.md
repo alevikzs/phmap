@@ -4,15 +4,14 @@
 
 ##About##
 
-The PhMap is a PHP package for creating objects from json strings, associative arrays and other objects(the 
-properties of this objects must be a public). The PhMap is based on 
-[phalcon annotations](https://docs.phalconphp.com/en/latest/reference/annotations.html).
+The PhMap is a PHP package for creating objects from JSON strings, associative arrays and other objects. The PhMap is 
+based on [phalcon annotations](https://docs.phalconphp.com/en/latest/reference/annotations.html).
 
 ##Requirements##
 
 * PHP >= 5.4 && < 7.0;
 * [Phalcon framework](https://phalconphp.com) >= 2.0;
-* If you will be use [Apc](http://php.net/manual/en/book.apc.php) or [XCache](https://xcache.lighttpd.net/) adapters you need to install corresponding php extensions.
+* If you will be using [APC](http://php.net/manual/en/book.apc.php) or [XCache](https://xcache.lighttpd.net/) adapters you need to install corresponding PHP extensions.
 
 ##Installation##
 
@@ -59,8 +58,9 @@ class Tree {
 ```
 
 As you can see, if some property of you object has type of another class - you must declare an annotation ```@mapper``` 
-for setter method of this property. This annotation has two arguments: ```class``` and ```isArray```. First argument is 
-a string with class name and second is a boolean value that indicates whether the your property value is array or not.
+for setter method of this property. This annotation has two arguments: ```class``` and ```isArray```. The first 
+argument is a string with the class name and second is a boolean value that indicates whether your property value is an 
+array or not.
 
 ```php
 class Branch {
@@ -113,7 +113,7 @@ class Leaf {
 }
 ```
 
-Create object of Tree class from json string:
+Create object of Tree class from JSON string:
 
 ```php
 $result = (new \PhMap\Mapper\Json($json, 'Tree'))->map();
@@ -132,7 +132,7 @@ $result = (new \PhMap\Mapper\Structure\Object($object, 'Tree'))->map();
 ```
 
 You can use ```\PhMap\Mapper\Smart``` if you don't know what type of you value. In this case mapping instructions 
-will be apply automatically:
+will be applied automatically:
 
 ```php
 $result = (new \PhMap\Mapper\Smart($value, 'Tree'))->map();
@@ -144,21 +144,68 @@ but also you can use [file adapter](https://docs.phalconphp.com/en/latest/api/Ph
 [XCache adapter](https://docs.phalconphp.com/en/latest/api/Phalcon_Annotations_Adapter_Xcache.html):
 
 ```php
-$result = (new \PhMap\Mapper\Json($json, 'Tree', \PhMap\Mapper::MEMORY_ANNOTATION_ADAPTER))->map();
+$result = (new \PhMap\Mapper\Json($json, 'Tree', \PhMap\Mapper::MEMORY_ANNOTATION_ADAPTER))
+    ->map();
 
-$result = (new \PhMap\Mapper\Smart($json, 'Tree', \PhMap\Mapper::FILES_ANNOTATION_ADAPTER))->map();
+$result = (new \PhMap\Mapper\Smart($json, 'Tree', \PhMap\Mapper::FILES_ANNOTATION_ADAPTER))
+    ->map();
 
-$result = (new \PhMap\Mapper\Structure\Associative($array, 'Tree', \PhMap\Mapper::APC_ANNOTATION_ADAPTER))->map();
+$result = (new \PhMap\Mapper\Structure\Associative($array, 'Tree', \PhMap\Mapper::APC_ANNOTATION_ADAPTER))
+    ->map();
 
-$result = (new \PhMap\Mapper\Structure\Object($object, 'Tree', \PhMap\Mapper::X_CACHE_ANNOTATION_ADAPTER))->map();
+$result = (new \PhMap\Mapper\Structure\Object($object, 'Tree', \PhMap\Mapper::X_CACHE_ANNOTATION_ADAPTER))
+    ->map();
 ```
 
-Also you can pass already existing object to the constructor:
+Also, you can pass already existing object to the constructor:
 
 ```php
 $tree = new Tree();
 
 $result = (new \PhMap\Mapper\Smart($json, $tree))->map();
+```
+
+You can reuse mapper object. Just set the necessary properties, and call the method ```map()```:
+
+```php
+$mapper = new \PhMap\Mapper\Structure\Object($tree, 'Tree', \PhMap\Mapper::X_CACHE_ANNOTATION_ADAPTER)
+$result = $mapper->map();
+
+$mapper->setInputObject($branch)
+    ->setOutputObject(new Branch())
+    ->setAnnotationAdapterType(Mapper::MEMORY_ANNOTATION_ADAPTER);
+$result = $mapper->map();
+``
+
+```map()``` method has two arguments. The first argument is a transforms object. This object is used to declare a set 
+of rules in where each rule indicates what field of input value is correspond to the output field value. The second 
+argument you can use for skip validation:
+
+```php
+$mapper = new \PhMap\Mapper\Structure\Object($tree, 'Tree')
+
+$transforms = (new \PhMap\Transforms())
+    ->add(
+        (new \PhMap\Transform())
+            ->setInputFieldName('nameIn')
+            ->setOutputFieldName('name')
+    )
+    ->add(
+        (new \PhMap\Transform())
+            ->setInputFieldName('branchTransformed')
+            ->setOutputFieldName('branch')
+            ->setTransforms(
+                (new \PhMap\Transforms())->add(
+                    (new \PhMap\Transform())
+                        ->setInputFieldName('leavesIn')
+                        ->setOutputFieldName('leaves')
+                )
+            )
+    );
+
+$validation = false;
+
+$result = $mapper->map($transforms, $validation);
 ```
 
 If you want your class can map some value to itself you must use MapperTrait in your class declaration:
