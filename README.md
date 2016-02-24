@@ -173,9 +173,9 @@ $mapper->setInputObject($branch)
 $result = $mapper->map();
 ```
 
-```map()``` method has two arguments. The first argument is a transforms object. This object is used to declare a set 
-of rules in where each rule indicates what field of input value is correspond to the output field value. The second 
-argument you can use for skip validation:
+Mapper object has ```setTransforms(Transforms $transforms)``` method. The argument of this method is a transforms 
+object. This object is used to declare a set of rules where each rule indicates what field of input value corresponds 
+to the output field value:
 
 ```php
 $mapper = new \PhMap\Mapper\Structure\Object($tree, 'Tree')
@@ -199,9 +199,13 @@ $transforms = (new \PhMap\Transforms())
             )
     );
 
-$validation = false;
+$result = $mapper->setTransforms($transforms)->map();
+```
 
-$result = $mapper->map($transforms, $validation);
+If you want to disable validation you can use ```disableValidation()``` method:
+
+```php
+$result = $mapper->disableValidation()->map();
 ```
 
 If you want your class can map some value to itself you must use MapperTrait in your class declaration:
