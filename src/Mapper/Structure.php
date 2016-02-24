@@ -191,18 +191,16 @@ abstract class Structure extends Mapper {
     }
 
     /**
-     * @param boolean $validation
-     * @param Transforms|null $transforms
      * @return object
      * @throws UnknownFieldException
      */
-    public function map(Transforms $transforms = null, $validation = true) {
+    public function map() {
         $methodsAnnotations = $this
             ->getReflector()
             ->getMethodsAnnotations();
 
         foreach ($this->getInputAttributes() as $attribute => $value) {
-            $transform = $transforms ? $transforms->findByInputFieldName($attribute) : null;
+            $transform = $this->getTransforms() ? $this->getTransforms()->findByInputFieldName($attribute) : null;
             $transformedAttribute = $transform ? $transform->getOutputFieldName() : $attribute;
 
             $setter = $this->createSetter($transformedAttribute);
@@ -217,8 +215,7 @@ abstract class Structure extends Mapper {
                     $transformedAttribute,
                     $value,
                     $methodAnnotations,
-                    $childTransforms,
-                    $validation
+                    $childTransforms
                 );
 
                 if (!is_null($valueToMap)) {
@@ -226,7 +223,7 @@ abstract class Structure extends Mapper {
                         ->getOutputObject()
                         ->$setter($valueToMap);
                 }
-            } elseif ($validation) {
+            } elseif ($this->getValidation()) {
                 throw new UnknownFieldException($transformedAttribute, $this->getOutputClass());
             }
         }
@@ -239,7 +236,6 @@ abstract class Structure extends Mapper {
      * @param mixed $value
      * @param Annotations $methodAnnotations
      * @param Transforms|null $transforms
-     * @param boolean $validation
      * @return mixed
      * @throws MustBeSimpleException
      * @throws MustBeSequenceException
@@ -249,8 +245,7 @@ abstract class Structure extends Mapper {
         $attribute,
         $value,
         Annotations $methodAnnotations,
-        Transforms $transforms = null,
-        $validation = true
+        Transforms $transforms = null
     ) {
         $valueToMap = $value;
 
@@ -262,30 +257,39 @@ abstract class Structure extends Mapper {
 
             if ($this->isObject($value)) {
                 if ($mapperAnnotationIsArray) {
-                    if ($validation) {
+                    if ($this->getValidation()) {
                         throw new MustBeSequenceException($attribute, $this->getOutputClass());
                     } else {
                         $valueToMap = null;
                     }
                 } else {
                     /** @var object|array $value */
+                    /** @var Mapper $mapper */
                     $mapper = new static($value, $mapperAnnotationClass);
-                    $valueToMap = $mapper->map($transforms, $validation);
+                    $valueToMap = $mapper->setTransforms($transforms)
+                        ->setValidation($this->getValidation())
+                        ->map();
                 }
             } else {
                 if ($mapperAnnotationIsArray) {
-                    $valueToMap = array_map(function($val) use ($mapperAnnotationClass, $transforms, $validation) {
-                        return (new static($val, $mapperAnnotationClass))
-                            ->map($transforms, $validation);
+                    $validation = $this->getValidation();
+                    $valueToMap = array_map(function($value) use ($mapperAnnotationClass, $transforms, $validation) {
+                        /** @var object|array $value */
+                        /** @var Mapper $mapper */
+                        $mapper = new static($value, $mapperAnnotationClass);
+                        return $mapper
+                            ->setTransforms($transforms)
+                            ->setValidation($validation)
+                            ->map();
                     }, $value);
-                } elseif ($validation) {
+                } elseif ($this->getValidation()) {
                     throw new MustBeObjectException($attribute, $this->getOutputClass());
                 } else {
                     $valueToMap = null;
                 }
             }
         } elseif ($this->isStructure($value)) {
-            if ($validation) {
+            if ($this->getValidation()) {
                 throw new MustBeSimpleException($attribute, $this->getOutputClass());
             } else {
                 $valueToMap = null;

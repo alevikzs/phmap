@@ -92,7 +92,8 @@ class AssociativeMapperTest extends MapperTest {
             );
 
         $objectMapped = (new Associative($inputStructure, new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map($transforms);
+            ->setTransforms($transforms)
+            ->map();
         $this->assertEquals($objectMapped, self::getTree());
     }
 
@@ -177,7 +178,8 @@ class AssociativeMapperTest extends MapperTest {
         ];
 
         $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree();
         $objectExpected->setHeight(null);
         $this->assertEquals($objectMapped, $objectExpected);
@@ -193,7 +195,8 @@ class AssociativeMapperTest extends MapperTest {
         ];
 
         $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree();
         $objectExpected->setBranch(new Branch());
         $this->assertEquals($objectMapped, $objectExpected);
@@ -207,15 +210,14 @@ class AssociativeMapperTest extends MapperTest {
         $array['branch'] = 1;
 
         $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree();
         $objectExpected->setBranch(null);
         $this->assertEquals($objectMapped, $objectExpected);
     }
 
     public function testDisableUnknownFieldException() {
-        $this->setExpectedException('\PhMap\Exception\FieldValidator\UnknownField');
-
         $class = '\Tests\Dummy\Tree';
 
         $array = self::getTreeDecodedToArray();
@@ -223,6 +225,7 @@ class AssociativeMapperTest extends MapperTest {
         $array['foo'] = 1;
 
         $objectMapped = (new Associative($array, $class, Mapper::FILES_ANNOTATION_ADAPTER))
+            ->disableValidation()
             ->map();
         $objectExpected = self::getTree();
         $this->assertEquals($objectMapped, $objectExpected);

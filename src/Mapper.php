@@ -45,6 +45,16 @@ abstract class Mapper implements MapperInterface {
     private $annotationAdapterType;
 
     /**
+     * @var Transforms
+     */
+    private $transforms;
+
+    /**
+     * @var boolean
+     */
+    private $validation;
+
+    /**
      * @return string
      */
     public function getOutputClass() {
@@ -98,12 +108,65 @@ abstract class Mapper implements MapperInterface {
     }
 
     /**
+     * @return Transforms
+     */
+    public function getTransforms() {
+        return $this->transforms;
+    }
+
+    /**
+     * @param Transforms|null $transforms
+     * @return $this
+     */
+    public function setTransforms(Transforms $transforms = null) {
+        $this->transforms = $transforms;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getValidation() {
+        return $this->validation;
+    }
+
+    /**
+     * @return $this
+     */
+    public function disableValidation() {
+        $this->validation = false;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableValidation() {
+        $this->validation = true;
+
+        return $this;
+    }
+
+    /**
+     * @param boolean $validation
+     * @return $this
+     */
+    public function setValidation($validation) {
+        $this->validation = $validation;
+
+        return $this;
+    }
+
+    /**
      * @param string|object $outputClassOrObject
      * @param integer $adapter
      */
     public function __construct($outputClassOrObject, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
         $this->setOutputClassOrObject($outputClassOrObject)
-            ->setAnnotationAdapterType($adapter);
+            ->setAnnotationAdapterType($adapter)
+            ->setValidation(true);
     }
 
     /**

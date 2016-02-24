@@ -42,10 +42,34 @@ interface MapperInterface {
     public function setAnnotationAdapterType($adapter);
 
     /**
-     * @param boolean $validation
-     * @param Transforms|null $transforms
+     * @param Transforms $transforms
+     * @return $this
+     */
+    public function setTransforms(Transforms $transforms);
+
+    /**
+     * @return Transforms
+     */
+    public function getTransforms();
+
+    /**
+     * @return $this
+     */
+    public function disableValidation();
+
+    /**
+     * @return $this
+     */
+    public function enableValidation();
+
+    /**
+     * @return boolean
+     */
+    public function getValidation();
+
+    /**
      * @return object
      */
-    public function map(Transforms $transforms = null, $validation = true);
+    public function map();
 
 }

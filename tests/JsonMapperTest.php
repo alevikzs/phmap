@@ -90,7 +90,8 @@ class JsonMapperTest extends MapperTest {
             );
 
         $objectMapped = (new Json($inputJson, new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map($transforms);
+            ->setTransforms($transforms)
+            ->map();
         $this->assertEquals($objectMapped, self::getTree());
     }
 
@@ -196,7 +197,8 @@ class JsonMapperTest extends MapperTest {
         $json = json_encode($object);
 
         $objectMapped = (new Json($json, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree();
         $objectExpected->setHeight(null);
         $this->assertEquals($objectMapped, $objectExpected);
@@ -212,7 +214,8 @@ class JsonMapperTest extends MapperTest {
         $json = json_encode($object);
 
         $objectMapped = (new Json($json, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree();
         $objectExpected->getBranch()->setLeaves();
         $this->assertEquals($objectMapped, $objectExpected);
@@ -228,7 +231,8 @@ class JsonMapperTest extends MapperTest {
         $json = json_encode($object);
 
         $objectMapped = (new Json($json, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree();
         $objectExpected->setBranch(null);
         $this->assertEquals($objectMapped, $objectExpected);
@@ -242,10 +246,9 @@ class JsonMapperTest extends MapperTest {
         $json = json_encode($object);
 
         $objectMapped = (new Json($json, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
-
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree()->setBranch(null)->setName(null);
-
         $this->assertEquals($objectMapped, $objectExpected);
     }
 

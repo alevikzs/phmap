@@ -63,8 +63,10 @@ abstract class Wrapper implements MapperInterface {
      * @return $this
      */
     public function setOutputObject($object) {
-        return $this->getMapper()
+        $this->getMapper()
             ->setOutputObject($object);
+
+        return $this;
     }
 
     /**
@@ -80,18 +82,65 @@ abstract class Wrapper implements MapperInterface {
      * @return $this
      */
     public function setAnnotationAdapterType($adapter) {
-        return $this->getMapper()
+        $this->getMapper()
             ->setAnnotationAdapterType($adapter);
+
+        return $this;
     }
 
     /**
-     * @param boolean $validation
-     * @param Transforms|null $transforms
+     * @return Transforms
+     */
+    public function getTransforms() {
+        return $this->getMapper()
+            ->getTransforms();
+    }
+
+    /**
+     * @param Transforms $transforms
+     * @return $this
+     */
+    public function setTransforms(Transforms $transforms) {
+        $this->getMapper()
+            ->setTransforms($transforms);
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getValidation() {
+        return $this->getMapper()
+            ->getValidation();
+    }
+
+    /**
+     * @return $this
+     */
+    public function disableValidation() {
+        $this->getMapper()
+            ->disableValidation();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableValidation() {
+        $this->getMapper()
+            ->enableValidation();
+
+        return $this;
+    }
+
+    /**
      * @return object
      */
-    public function map(Transforms $transforms = null, $validation = true) {
+    public function map() {
         return $this->getMapper()
-            ->map($transforms, $validation);
+            ->map();
     }
 
     /**

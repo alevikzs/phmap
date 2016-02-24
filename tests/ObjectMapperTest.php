@@ -99,7 +99,8 @@ class ObjectMapperTest extends MapperTest {
             );
 
         $objectMapped = (new Object($inputStructure, new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map($transforms);
+            ->setTransforms($transforms)
+            ->map();
         $this->assertEquals($objectMapped, self::getTree());
     }
 
@@ -185,7 +186,8 @@ class ObjectMapperTest extends MapperTest {
         $object->height = $height;
 
         $objectMapped = (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree();
         $objectExpected->setHeight(null);
         $this->assertEquals($objectMapped, $objectExpected);
@@ -199,7 +201,8 @@ class ObjectMapperTest extends MapperTest {
         $object->branch->leaves = new stdClass();
 
         $objectMapped = (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree();
         $objectExpected->getBranch()->setLeaves();
         $this->assertEquals($objectMapped, $objectExpected);
@@ -213,7 +216,8 @@ class ObjectMapperTest extends MapperTest {
         $object->branch = 1;
 
         $objectMapped = (new Object($object, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree();
         $objectExpected->setBranch(null);
         $this->assertEquals($objectMapped, $objectExpected);
@@ -225,10 +229,9 @@ class ObjectMapperTest extends MapperTest {
         $inputObject = self::getTreeTransformedDecodedToObject();
 
         $objectMapped = (new Object($inputObject, $class, Mapper::FILES_ANNOTATION_ADAPTER))
-            ->map(null, false);
-
+            ->disableValidation()
+            ->map();
         $objectExpected = self::getTree()->setBranch(null)->setName(null);
-
         $this->assertEquals($objectMapped, $objectExpected);
     }
 
