@@ -105,9 +105,12 @@ class ObjectMapperTest extends MapperTest {
     }
 
     public function testMustBeSimpleException() {
-        $this->setExpectedException('\PhMap\Exception\FieldValidator\MustBeSimple');
-
         $class = '\Tests\Dummy\Tree';
+
+        $this->setExpectedException(
+            '\PhMap\Exception\FieldValidator\MustBeSimple',
+            'Passed "height" field of "' . $class . '" class must be a simple type'
+        );
 
         $object = self::getTreeDecodedToObject();
 
@@ -122,9 +125,12 @@ class ObjectMapperTest extends MapperTest {
     }
 
     public function testMustBeSequenceException() {
-        $this->setExpectedException('\PhMap\Exception\FieldValidator\MustBeSequence');
-
         $class = '\Tests\Dummy\Tree';
+
+        $this->setExpectedException(
+            '\PhMap\Exception\FieldValidator\MustBeSequence',
+            'Passed "leaves" field of "\Tests\Dummy\Branch" class must be sequence'
+        );
 
         $object = self::getTreeDecodedToObject();
 
@@ -135,9 +141,12 @@ class ObjectMapperTest extends MapperTest {
     }
 
     public function testMustBeObjectException() {
-        $this->setExpectedException('\PhMap\Exception\FieldValidator\MustBeObject');
-
         $class = '\Tests\Dummy\Tree';
+
+        $this->setExpectedException(
+            '\PhMap\Exception\FieldValidator\MustBeObject',
+            'Passed "branch" field of "' . $class . '" class must be an object'
+        );
 
         $object = self::getTreeDecodedToObject();
 
@@ -148,9 +157,12 @@ class ObjectMapperTest extends MapperTest {
     }
 
     public function testUnknownFieldException() {
-        $this->setExpectedException('\PhMap\Exception\FieldValidator\UnknownField');
-
         $class = '\Tests\Dummy\Tree';
+
+        $this->setExpectedException(
+            '\PhMap\Exception\FieldValidator\UnknownField',
+            '"' . $class . '" class has not a "foo" field'
+        );
 
         $object = self::getTreeDecodedToObject();
 
