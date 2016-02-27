@@ -2,8 +2,7 @@
 
 namespace Tests;
 
-use \stdClass,
-    \PHPUnit_Framework_TestCase as TestCase,
+use \PHPUnit_Framework_TestCase as TestCase,
 
     \Tests\Dummy\Tree,
     \Tests\Dummy\TreeTransformed,
@@ -13,77 +12,54 @@ use \stdClass,
 
 /**
  * Class MapperTest
+ * @abstract
  * @package Tests
  */
 abstract class MapperTest extends TestCase {
 
     /**
      * @return Tree
+     * @static
      */
     protected static function getTree() {
-        static $tree;
-
-        if (!$tree) {
-            $tree = new Tree(2, 'Pear', self::getBranch());
-        }
-
-        return clone $tree;
+        return new Tree(2, 'Pear', self::getBranch());
     }
 
     /**
      * @return Branch
+     * @static
      */
     protected static function getBranch() {
-        static $branch;
-
-        if (!$branch) {
-            $branch = new Branch(1, [self::getLeaf(), self::getLeaf()]);
-        }
-
-        return clone $branch;
+        return new Branch(1, [self::getLeaf(), self::getLeaf()]);
     }
 
     /**
      * @return TreeTransformed
+     * @static
      */
     protected static function getTreeTransformed() {
-        static $tree;
-
-        if (!$tree) {
-            $tree = new TreeTransformed(2, 'Pear', self::getBranchTransformed());
-        }
-
-        return clone $tree;
+        return new TreeTransformed(2, 'Pear', self::getBranchTransformed());
     }
 
     /**
      * @return BranchTransformed
+     * @static
      */
     protected static function getBranchTransformed() {
-        static $branch;
-
-        if (!$branch) {
-            $branch = new BranchTransformed(1, [self::getLeaf(), self::getLeaf()]);
-        }
-
-        return clone $branch;
+        return new BranchTransformed(1, [self::getLeaf(), self::getLeaf()]);
     }
 
     /**
      * @return Leaf
+     * @static
      */
     protected static function getLeaf() {
-        static $leaf;
-
-        if (!$leaf) {
-            $leaf = new Leaf(2, 3);
-        }
-
-        return clone $leaf;
+        return new Leaf(2, 3);
     }
 
     /**
      * @return string
+     * @static
      */
     protected static function getTreeJson() {
         static $treeJson;
@@ -97,6 +73,7 @@ abstract class MapperTest extends TestCase {
 
     /**
      * @return string
+     * @static
      */
     protected static function getTreeTransformedJson() {
         static $treeJson;
@@ -110,6 +87,7 @@ abstract class MapperTest extends TestCase {
 
     /**
      * @return string
+     * @static
      */
     protected static function getBranchJson() {
         static $branchJson;

@@ -14,6 +14,7 @@ trait MapperTrait {
      * @param array|object|string $value
      * @param integer $adapter
      * @return $this
+     * @static
      */
     public static function staticMap($value, $adapter = Mapper::MEMORY_ANNOTATION_ADAPTER) {
         /** @var Smart $mapper */

@@ -18,6 +18,7 @@ class SmartMapperTest extends MapperTest {
 
     /**
      * @return stdClass
+     * @static
      */
     protected static function getTreeDecodedToObject() {
         return json_decode(self::getTreeJson());
@@ -25,11 +26,15 @@ class SmartMapperTest extends MapperTest {
 
     /**
      * @return array
+     * @static
      */
     private static function getTreeDecodedToArray() {
         return json_decode(self::getTreeJson(), true);
     }
 
+    /**
+     * @return void
+     */
     public function testWithMemoryAdapter() {
         $class = '\Tests\Dummy\Tree';
 
@@ -47,6 +52,9 @@ class SmartMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @return void
+     */
     public function testWithFileAdapter() {
         $class = '\Tests\Dummy\Tree';
 
@@ -64,6 +72,9 @@ class SmartMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @return void
+     */
     public function testReusable() {
         $mapper = new Smart(self::getTreeDecodedToArray(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER);
 
@@ -85,6 +96,10 @@ class SmartMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @throws \PhMap\Exception\SmartValidator
+     * @return void
+     */
     public function testSmartUnsupportedValue() {
         $value = 1.1;
 

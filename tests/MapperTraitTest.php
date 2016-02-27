@@ -14,11 +14,15 @@ class MapperTraitTest extends MapperTest {
 
     /**
      * @return array
+     * @static
      */
     private static function getTreeDecodedToArray() {
         return json_decode(self::getTreeJson(), true);
     }
 
+    /**
+     * @return void
+     */
     public function testMain() {
         $objectMapped = Tree::staticMap(self::getTreeJson(), Mapper::FILES_ANNOTATION_ADAPTER);
         $this->assertEquals($objectMapped, self::getTree());

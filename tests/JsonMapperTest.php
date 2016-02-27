@@ -19,6 +19,7 @@ class JsonMapperTest extends MapperTest {
 
     /**
      * @return stdClass
+     * @static
      */
     protected static function getTreeDecodedToObject() {
         return json_decode(self::getTreeJson());
@@ -26,11 +27,15 @@ class JsonMapperTest extends MapperTest {
 
     /**
      * @return stdClass
+     * @static
      */
     protected static function getTreeTransformedDecodedToObject() {
         return json_decode(self::getTreeTransformedJson());
     }
 
+    /**
+     * @return void
+     */
     public function testMapperWithMemoryAdapter() {
         $class = '\Tests\Dummy\Tree';
 
@@ -40,6 +45,9 @@ class JsonMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @return void
+     */
     public function testMapperWithFilesAdapter() {
         $class = '\Tests\Dummy\Tree';
 
@@ -49,6 +57,9 @@ class JsonMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @return void
+     */
     public function testMapperWithInstances() {
         $mapper = new Json(self::getTreeJson(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER);
         /** @var Tree $objectMapped */
@@ -58,6 +69,9 @@ class JsonMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @return void
+     */
     public function testReusable() {
         $mapper = new Json(self::getTreeJson(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER);
 
@@ -73,6 +87,9 @@ class JsonMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getBranch());
     }
 
+    /**
+     * @return void
+     */
     public function testTransforms() {
         $inputJson = self::getTreeTransformedJson();
 
@@ -95,6 +112,10 @@ class JsonMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @throws \PhMap\Exception\FieldValidator\MustBeSimple
+     * @return void
+     */
     public function testMustBeSimpleException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -116,6 +137,10 @@ class JsonMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @throws \PhMap\Exception\FieldValidator\MustBeSequence
+     * @return void
+     */
     public function testMustBeSequenceException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -133,6 +158,10 @@ class JsonMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @throws \PhMap\Exception\FieldValidator\MustBeObject
+     * @return void
+     */
     public function testMustBeObjectException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -152,6 +181,10 @@ class JsonMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @throws \PhMap\Exception\FieldValidator\UnknownField
+     * @return void
+     */
     public function testUnknownFieldException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -169,6 +202,10 @@ class JsonMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @throws \PhMap\Exception\InvalidJson
+     * @return void
+     */
     public function testInvalidJson() {
         $json = 1;
 
@@ -183,6 +220,10 @@ class JsonMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @throws \PhMap\Exception\UnknownAnnotationAdapter
+     * @return void
+     */
     public function testUnknownAdapter() {
         $this->setExpectedException(
             '\PhMap\Exception\UnknownAnnotationAdapter',
@@ -197,6 +238,9 @@ class JsonMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @return void
+     */
     public function testDisableMustBeSimpleException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -218,6 +262,9 @@ class JsonMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, $objectExpected);
     }
 
+    /**
+     * @return void
+     */
     public function testDisableMustBeSequenceException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -235,6 +282,9 @@ class JsonMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, $objectExpected);
     }
 
+    /**
+     * @return void
+     */
     public function testDisableMustBeObjectException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -252,6 +302,9 @@ class JsonMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, $objectExpected);
     }
 
+    /**
+     * @return void
+     */
     public function testDisableUnknownFieldException() {
         $class = '\Tests\Dummy\Tree';
 

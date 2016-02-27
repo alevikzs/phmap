@@ -18,6 +18,7 @@ class AssociativeMapperTest extends MapperTest {
 
     /**
      * @return array
+     * @static
      */
     private static function getTreeDecodedToArray() {
         return json_decode(self::getTreeJson(), true);
@@ -25,6 +26,7 @@ class AssociativeMapperTest extends MapperTest {
 
     /**
      * @return array
+     * @static
      */
     protected static function getBranchDecodedToArray() {
         return json_decode(self::getBranchJson(), true);
@@ -32,11 +34,15 @@ class AssociativeMapperTest extends MapperTest {
 
     /**
      * @return array
+     * @static
      */
     protected static function getTreeTransformedDecodedToArray() {
         return json_decode(self::getTreeTransformedJson(), true);
     }
 
+    /**
+     * @return void
+     */
     public function testMapperWithMemoryAdapter() {
         $class = '\Tests\Dummy\Tree';
 
@@ -45,6 +51,9 @@ class AssociativeMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @return void
+     */
     public function testMapperWithFilesAdapter() {
         $class = '\Tests\Dummy\Tree';
 
@@ -53,6 +62,9 @@ class AssociativeMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @return void
+     */
     public function testMapperWithInstances() {
         /** @var Tree $objectMapped */
         $objectMapped = (new Associative(self::getTreeDecodedToArray(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
@@ -60,6 +72,9 @@ class AssociativeMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @return void
+     */
     public function testReusable() {
         $mapper = new Associative(self::getTreeDecodedToArray(), new Tree(), Mapper::FILES_ANNOTATION_ADAPTER);
 
@@ -75,6 +90,9 @@ class AssociativeMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getBranch());
     }
 
+    /**
+     * @return void
+     */
     public function testTransforms() {
         $inputStructure = self::getTreeTransformedDecodedToArray();
 
@@ -97,6 +115,10 @@ class AssociativeMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, self::getTree());
     }
 
+    /**
+     * @throws \PhMap\Exception\FieldValidator\MustBeSimple
+     * @return void
+     */
     public function testMustBeSimpleException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -116,6 +138,10 @@ class AssociativeMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @throws \PhMap\Exception\FieldValidator\MustBeSequence
+     * @return void
+     */
     public function testMustBeSequenceException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -134,6 +160,10 @@ class AssociativeMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @throws \PhMap\Exception\FieldValidator\MustBeObject
+     * @return void
+     */
     public function testMustBeObjectException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -150,6 +180,10 @@ class AssociativeMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @throws \PhMap\Exception\FieldValidator\UnknownField
+     * @return void
+     */
     public function testUnknownFieldException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -166,6 +200,10 @@ class AssociativeMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @throws \PhMap\Exception\UnknownAnnotationAdapter
+     * @return void
+     */
     public function testUnknownAdapter() {
         $this->setExpectedException(
             '\PhMap\Exception\UnknownAnnotationAdapter',
@@ -180,6 +218,9 @@ class AssociativeMapperTest extends MapperTest {
             ->map();
     }
 
+    /**
+     * @return void
+     */
     public function testDisableMustBeSimpleException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -197,6 +238,9 @@ class AssociativeMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, $objectExpected);
     }
 
+    /**
+     * @return void
+     */
     public function testDisableMustBeSequenceException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -214,6 +258,9 @@ class AssociativeMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, $objectExpected);
     }
 
+    /**
+     * @return void
+     */
     public function testDisableMustBeObjectException() {
         $class = '\Tests\Dummy\Tree';
 
@@ -229,6 +276,9 @@ class AssociativeMapperTest extends MapperTest {
         $this->assertEquals($objectMapped, $objectExpected);
     }
 
+    /**
+     * @return void
+     */
     public function testDisableUnknownFieldException() {
         $class = '\Tests\Dummy\Tree';
 
