@@ -68,6 +68,17 @@ interface MapperInterface {
     public function getValidation();
 
     /**
+     * @param array $attributes
+     * @return $this
+     */
+    public function setSkipAttributes(array $attributes = []);
+
+    /**
+     * @return array
+     */
+    public function getSkipAttributes();
+
+    /**
      * @return object
      */
     public function map();

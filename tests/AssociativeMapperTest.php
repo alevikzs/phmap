@@ -116,6 +116,31 @@ class AssociativeMapperTest extends MapperTest {
     }
 
     /**
+     * @return void
+     */
+    public function testSkipAttributes() {
+        $inputStructure = self::getTreeDecodedToArray();
+
+        $skipAttributes = [
+            'name',
+            'branch.length'
+        ];
+
+        $objectMapped = (new Associative($inputStructure, new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
+            ->setSkipAttributes($skipAttributes)
+            ->map();
+        $this->assertEquals(
+            $objectMapped,
+            self::getTree()
+                ->setName(null)
+                ->setBranch(
+                    self::getBranch()
+                        ->setLength(null)
+                )
+        );
+    }
+
+    /**
      * @throws \PhMap\Exception\FieldValidator\MustBeSimple
      * @return void
      */

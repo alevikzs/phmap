@@ -55,6 +55,11 @@ abstract class Mapper implements MapperInterface {
     private $validation;
 
     /**
+     * @var array
+     */
+    private $skipAttributes;
+
+    /**
      * @return string
      */
     public function getOutputClass() {
@@ -160,13 +165,31 @@ abstract class Mapper implements MapperInterface {
     }
 
     /**
+     * @param array $attributes
+     * @return $this
+     */
+    public function setSkipAttributes(array $attributes = []) {
+        $this->skipAttributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSkipAttributes() {
+        return $this->skipAttributes;
+    }
+
+    /**
      * @param string|object $outputClassOrObject
      * @param integer $adapter
      */
     public function __construct($outputClassOrObject, $adapter = self::MEMORY_ANNOTATION_ADAPTER) {
         $this->setOutputClassOrObject($outputClassOrObject)
             ->setAnnotationAdapterType($adapter)
-            ->setValidation(true);
+            ->setValidation(true)
+            ->setSkipAttributes();
     }
 
     /**

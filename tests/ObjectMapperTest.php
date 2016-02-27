@@ -126,6 +126,31 @@ class ObjectMapperTest extends MapperTest {
     }
 
     /**
+     * @return void
+     */
+    public function testSkipAttributes() {
+        $inputStructure = self::getTree();
+
+        $skipAttributes = [
+            'name',
+            'branch.length'
+        ];
+
+        $objectMapped = (new Object($inputStructure, new Tree(), Mapper::FILES_ANNOTATION_ADAPTER))
+            ->setSkipAttributes($skipAttributes)
+            ->map();
+        $this->assertEquals(
+            $objectMapped,
+            self::getTree()
+                ->setName(null)
+                ->setBranch(
+                    self::getBranch()
+                        ->setLength(null)
+                )
+        );
+    }
+
+    /**
      * @throws \PhMap\Exception\FieldValidator\MustBeSimple
      * @return void
      */

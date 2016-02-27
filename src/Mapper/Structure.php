@@ -12,7 +12,7 @@ use \Phalcon\Annotations\Annotation,
     \Phalcon\Annotations\Adapter\Xcache,
 
     \PhMap\Mapper,
-    \PhMap\Transforms,
+    \PhMap\Transform,
     \PhMap\Exception\UnknownAnnotationAdapter,
     \PhMap\Exception\FieldValidator\UnknownField as UnknownFieldException,
     \PhMap\Exception\FieldValidator\MustBeSimple as MustBeSimpleException,
@@ -203,19 +203,21 @@ abstract class Structure extends Mapper {
             $transform = $this->getTransforms() ? $this->getTransforms()->findByInputFieldName($attribute) : null;
             $transformedAttribute = $transform ? $transform->getOutputFieldName() : $attribute;
 
+            if ($this->needToSkip($transformedAttribute)) {
+                continue;
+            }
+
             $setter = $this->createSetter($transformedAttribute);
 
             if ($this->hasAttribute($transformedAttribute)) {
                 /** @var Annotations $methodAnnotations */
                 $methodAnnotations = $methodsAnnotations[$setter];
 
-                $childTransforms = $transform ? $transform->getTransforms() : null;
-
                 $valueToMap = $this->buildValueToMap(
                     $transformedAttribute,
                     $value,
                     $methodAnnotations,
-                    $childTransforms
+                    $transform
                 );
 
                 if (!is_null($valueToMap)) {
@@ -232,10 +234,50 @@ abstract class Structure extends Mapper {
     }
 
     /**
+     * @return array
+     */
+    protected function getCurrentSkipAttributes() {
+        static $currentSkipAttributes = [];
+
+        if (empty($currentSkipAttributes)) {
+            foreach ($this->getSkipAttributes() as $attribute) {
+                $attributes = explode('.', $attribute);
+                if (count($attributes) === 1) {
+                    $currentSkipAttributes[] = array_pop($attributes);
+                }
+            }
+        }
+
+        return $currentSkipAttributes;
+    }
+
+    protected function getSkipAttributesByParent($parentAttribute) {
+        $skipAttributes = [];
+
+        foreach ($this->getSkipAttributes() as $skipAttribute) {
+            $parentAttributeWithDelimiter = $parentAttribute . '.';
+
+            if (strpos($skipAttribute, $parentAttributeWithDelimiter) === 0) {
+                $skipAttributes[] = str_replace($parentAttributeWithDelimiter, '', $skipAttribute);
+            }
+        }
+
+        return $skipAttributes;
+    }
+
+    /**
+     * @param $attribute
+     * @return boolean
+     */
+    protected function needToSkip($attribute) {
+        return in_array($attribute, $this->getSkipAttributes());
+    }
+
+    /**
      * @param string $attribute
      * @param mixed $value
      * @param Annotations $methodAnnotations
-     * @param Transforms|null $transforms
+     * @param Transform|null $transform
      * @return mixed
      * @throws MustBeSimpleException
      * @throws MustBeSequenceException
@@ -245,7 +287,7 @@ abstract class Structure extends Mapper {
         $attribute,
         $value,
         Annotations $methodAnnotations,
-        Transforms $transforms = null
+        Transform $transform = null
     ) {
         $valueToMap = $value;
 
@@ -254,6 +296,10 @@ abstract class Structure extends Mapper {
             $mapperAnnotation = $methodAnnotations->get('mapper');
             $mapperAnnotationClass = $mapperAnnotation->getArgument('class');
             $mapperAnnotationIsArray = $mapperAnnotation->getArgument('isArray');
+
+            $transforms = $transform ? $transform->getTransforms() : null;
+
+            $skipAttributes = $this->getSkipAttributesByParent($attribute);
 
             if ($this->isObject($value)) {
                 if ($mapperAnnotationIsArray) {
@@ -266,20 +312,28 @@ abstract class Structure extends Mapper {
                     /** @var object|array $value */
                     /** @var Mapper $mapper */
                     $mapper = new static($value, $mapperAnnotationClass);
-                    $valueToMap = $mapper->setTransforms($transforms)
+                    $valueToMap = $mapper
+                        ->setTransforms($transforms)
                         ->setValidation($this->getValidation())
+                        ->setSkipAttributes($skipAttributes)
                         ->map();
                 }
             } else {
                 if ($mapperAnnotationIsArray) {
                     $validation = $this->getValidation();
-                    $valueToMap = array_map(function($value) use ($mapperAnnotationClass, $transforms, $validation) {
+                    $valueToMap = array_map(function($value) use (
+                        $mapperAnnotationClass,
+                        $transforms,
+                        $validation,
+                        $skipAttributes
+                    ) {
                         /** @var object|array $value */
                         /** @var Mapper $mapper */
                         $mapper = new static($value, $mapperAnnotationClass);
                         return $mapper
                             ->setTransforms($transforms)
                             ->setValidation($validation)
+                            ->setSkipAttributes($skipAttributes)
                             ->map();
                     }, $value);
                 } elseif ($this->getValidation()) {

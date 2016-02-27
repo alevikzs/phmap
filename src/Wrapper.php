@@ -136,6 +136,25 @@ abstract class Wrapper implements MapperInterface {
     }
 
     /**
+     * @param array $attributes
+     * @return $this
+     */
+    public function setSkipAttributes(array $attributes = []) {
+        $this->getMapper()
+            ->setSkipAttributes($attributes);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSkipAttributes() {
+        return $this->getMapper()
+            ->getSkipAttributes();
+    }
+
+    /**
      * @return object
      */
     public function map() {
