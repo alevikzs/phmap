@@ -24,13 +24,16 @@ class MapperTraitTest extends MapperTest {
      * @return void
      */
     public function testMain() {
-        $objectMapped = Tree::staticMap(self::getTreeJson(), Mapper::FILES_ANNOTATION_ADAPTER);
+        $objectMapped = Tree::staticMapper(self::getTreeJson(), Mapper::FILES_ANNOTATION_ADAPTER)
+            ->map();
         $this->assertEquals($objectMapped, self::getTree());
 
-        $objectMapped = Tree::staticMap(self::getTreeDecodedToArray(), Mapper::FILES_ANNOTATION_ADAPTER);
+        $objectMapped = Tree::staticMapper(self::getTreeDecodedToArray(), Mapper::FILES_ANNOTATION_ADAPTER)
+            ->map();
         $this->assertEquals($objectMapped, self::getTree());
 
-        $objectMapped = (new Tree())->map(self::getTreeJson(), Mapper::FILES_ANNOTATION_ADAPTER);
+        $objectMapped = (new Tree())->mapper(self::getTreeJson(), Mapper::FILES_ANNOTATION_ADAPTER)
+            ->map();
         $this->assertEquals($objectMapped, self::getTree());
     }
 

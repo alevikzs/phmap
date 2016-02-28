@@ -11,32 +11,45 @@ use \PhMap\Wrapper\Smart;
 trait MapperTrait {
 
     /**
+     * @var Smart
+     */
+    private static $mapper;
+
+    /**
      * @param array|object|string $value
      * @param integer $adapter
-     * @return $this
+     * @return Smart
      * @static
      */
-    public static function staticMap($value, $adapter = Mapper::MEMORY_ANNOTATION_ADAPTER) {
-        /** @var Smart $mapper */
-        static $mapper;
-
-        if (is_null($mapper)) {
-            $mapper = new Smart($value, get_called_class(), $adapter);
-        } else {
-            $mapper->setInputValue($value)
-                ->setAnnotationAdapterType($adapter);
-        }
-        return $mapper->map();
+    public static function staticMapper($value, $adapter = Mapper::MEMORY_ANNOTATION_ADAPTER) {
+        return self::updateMapper($value, $adapter);
     }
 
     /**
      * @param array|object|string $value
      * @param integer $adapter
-     * @return $this
+     * @return Smart
+     * @static
      */
-    public function map($value, $adapter = Mapper::MEMORY_ANNOTATION_ADAPTER) {
-        return (new Smart($value, $this, $adapter))
-            ->map();
+    public function mapper($value, $adapter = Mapper::MEMORY_ANNOTATION_ADAPTER) {
+        return self::updateMapper($value, $adapter);
+    }
+
+    /**
+     * @param $value
+     * @param int $adapter
+     * @return Smart
+     */
+    private static function updateMapper($value, $adapter = Mapper::MEMORY_ANNOTATION_ADAPTER) {
+        if (is_null(self::$mapper)) {
+            self::$mapper = new Smart($value, get_called_class(), $adapter);
+        } else {
+            self::$mapper
+                ->setInputValue($value)
+                ->setAnnotationAdapterType($adapter);
+        }
+
+        return self::$mapper;
     }
 
 }
