@@ -202,6 +202,19 @@ $transforms = (new \PhMap\Transforms())
 $result = $mapper->setTransforms($transforms)->map();
 ```
 
+For skipping some attributes and not map them, you can use ```setSkipAttributes(array $attributes)```:
+
+```php
+$mapper = new \PhMap\Mapper\Structure\Object($tree, 'Tree')
+
+$attributes = [
+    'name',
+    'branch.length'
+];
+
+$result = $mapper->setSkipAttributes($attributes)->map();
+```
+
 If you want to disable validation you can use ```disableValidation()``` method:
 
 ```php
