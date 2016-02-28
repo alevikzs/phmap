@@ -233,13 +233,13 @@ class Tree {
 }
 ```
 
-and then you can call ```map()``` or ```staticMap()``` methods:
+and then you can call ```mapper()``` or ```staticMapper()``` methods:
 
 ```php
 $tree = new Tree();
-$result = $tree->map($json);
+$result = $tree->mapper($json)->map();
 
-$result = Tree::staticMap($json);
+$result = Tree::staticMapper($json)->map();
 ```
 
 ##The MIT License (MIT)##
