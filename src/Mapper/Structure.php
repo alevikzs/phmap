@@ -251,6 +251,10 @@ abstract class Structure extends Mapper {
         return $currentSkipAttributes;
     }
 
+    /**
+     * @param string $parentAttribute
+     * @return array
+     */
     protected function getSkipAttributesByParent($parentAttribute) {
         $skipAttributes = [];
 

@@ -18,7 +18,7 @@ based on [phalcon annotations](https://docs.phalconphp.com/en/latest/reference/a
 1. Require the package and its dependencies with composer: ```$ composer require alevikzs/phmap```
 2. Install [Phalcon framework](https://phalconphp.com). Detail guide is [here](https://phalconphp.com/en/download).
 
-##Examples##
+##How to use##
 
 ```php
 class Tree {
