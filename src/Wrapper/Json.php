@@ -10,7 +10,6 @@ use \PhMap\Mapper,
 /**
  * Class Json
  * @package PhMap\Wrapper
- * @method ObjectMapper getMapper()
  */
 class Json extends Wrapper {
 
@@ -41,8 +40,9 @@ class Json extends Wrapper {
 
             $this->createInputObject();
 
-            $this->getMapper()
-                ->setInputObject($this->getInputObject());
+            /** @var ObjectMapper $mapper */
+            $mapper = $this->getMapper();
+            $mapper->setInputObject($this->getInputObject());
         }
 
         return $this;
