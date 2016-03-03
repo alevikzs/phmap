@@ -83,7 +83,7 @@ class Smart extends Wrapper {
             return '\PhMap\Wrapper\Json';
         } elseif (is_object($this->getInputValue())) {
             return '\PhMap\Mapper\Structure\Object';
-        } elseif(is_array($this->getInputValue())) {
+        } elseif (is_array($this->getInputValue())) {
             return '\PhMap\Mapper\Structure\Associative';
         }
 
