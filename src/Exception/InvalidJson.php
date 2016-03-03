@@ -11,19 +11,19 @@ use \PhMap\Exception;
 class InvalidJson extends Exception {
 
     /**
-     * @var mixed
+     * @var string
      */
     private $string;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getString() {
         return $this->string;
     }
 
     /**
-     * @param mixed $string
+     * @param string $string
      * @return $this
      */
     public function setString($string) {
@@ -32,6 +32,9 @@ class InvalidJson extends Exception {
         return $this;
     }
 
+    /**
+     * @param string $string
+     */
     public function __construct($string) {
         $this->setString($string);
 

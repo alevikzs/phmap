@@ -1,6 +1,9 @@
 #PhMap#
 
-**Build Status:** [![Build Status](https://secure.travis-ci.org/alevikzs/phmap.png?branch=master)](http://travis-ci.org/alevikzs/phmap)
+[![Latest Stable Version](https://poser.pugx.org/alevikzs/phmap/v/stable)](https://packagist.org/packages/alevikzs/phmap) 
+[![Total Downloads](https://poser.pugx.org/alevikzs/phmap/downloads)](https://packagist.org/packages/alevikzs/phmap) 
+[![License](https://poser.pugx.org/alevikzs/phmap/license)](https://packagist.org/packages/alevikzs/phmap)
+[![Build Status](https://secure.travis-ci.org/alevikzs/phmap.png?branch=master)](http://travis-ci.org/alevikzs/phmap)
 
 ##About##
 

@@ -10,7 +10,7 @@ namespace PhMap;
 abstract class Wrapper implements MapperInterface {
 
     /**
-     * @var Mapper
+     * @var MapperInterface
      */
     private $mapper;
 

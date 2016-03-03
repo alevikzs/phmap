@@ -112,7 +112,7 @@ abstract class Structure extends Mapper {
      * @return $this
      */
     public function setOutputClass($class) {
-        parent::setOutputClassInternal($class);
+        $this->setOutputClassInternal($class);
 
         return $this->updateReflector();
     }
@@ -122,7 +122,7 @@ abstract class Structure extends Mapper {
      * @return $this
      */
     public function setOutputObject($object) {
-        parent::setOutputObjectInternal($object);
+        $this->setOutputObjectInternal($object);
 
         return $this->updateReflector();
     }
