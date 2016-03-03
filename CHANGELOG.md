@@ -1,5 +1,6 @@
-- v2.3 2016-03-03
+- v2.3 2016-03-04
     * fixed json get mapper
+    * refactored code
     * updated changelog
 - v2.2 2016-02-29
     * refactored MapperTrait

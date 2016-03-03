@@ -4,6 +4,7 @@
 [![Total Downloads](https://poser.pugx.org/alevikzs/phmap/downloads)](https://packagist.org/packages/alevikzs/phmap) 
 [![License](https://poser.pugx.org/alevikzs/phmap/license)](https://packagist.org/packages/alevikzs/phmap)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alevikzs/phmap/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alevikzs/phmap/?branch=master)
+[![Code Climate](https://codeclimate.com/github/alevikzs/phmap/badges/gpa.svg)](https://codeclimate.com/github/alevikzs/phmap)
 [![Build Status](https://secure.travis-ci.org/alevikzs/phmap.png?branch=master)](http://travis-ci.org/alevikzs/phmap)
 
 ##About##
