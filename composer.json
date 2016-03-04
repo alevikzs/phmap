@@ -13,11 +13,11 @@
   "minimum-stability": "stable",
   "require": {
     "php": ">=5.4.0",
-    "ext-phalcon": "*"
+    "ext-phalcon": "2.0.*"
   },
   "require-dev": {
-    "phpunit/phpunit": "4.5.*",
-    "phalcon/devtools": "dev-master"
+    "phpunit/phpunit": "4.8.*",
+    "phalcon/devtools": "2.0.*"
   },
   "autoload": {
     "psr-4": {

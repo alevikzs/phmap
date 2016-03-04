@@ -1,8 +1,10 @@
 #PhMap#
 
+[![License](https://poser.pugx.org/alevikzs/phmap/license)](https://packagist.org/packages/alevikzs/phmap)
 [![Latest Stable Version](https://poser.pugx.org/alevikzs/phmap/v/stable)](https://packagist.org/packages/alevikzs/phmap) 
 [![Total Downloads](https://poser.pugx.org/alevikzs/phmap/downloads)](https://packagist.org/packages/alevikzs/phmap) 
-[![License](https://poser.pugx.org/alevikzs/phmap/license)](https://packagist.org/packages/alevikzs/phmap)
+[![Dependency Status](https://www.versioneye.com/user/projects/56da017bd5a5350029ae5cd8/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56da017bd5a5350029ae5cd8)
+[![Reference Status](https://www.versioneye.com/php/alevikzs:phmap/reference_badge.svg?style=flat)](https://www.versioneye.com/php/alevikzs:phmap/references)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alevikzs/phmap/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alevikzs/phmap/?branch=master)
 [![Code Climate](https://codeclimate.com/github/alevikzs/phmap/badges/gpa.svg)](https://codeclimate.com/github/alevikzs/phmap)
 [![Build Status](https://secure.travis-ci.org/alevikzs/phmap.png?branch=master)](http://travis-ci.org/alevikzs/phmap)
