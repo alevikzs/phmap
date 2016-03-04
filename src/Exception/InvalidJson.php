@@ -13,32 +13,32 @@ class InvalidJson extends Exception {
     /**
      * @var string
      */
-    private $string;
+    private $json;
 
     /**
      * @return string
      */
-    public function getString() {
-        return $this->string;
+    public function getJson() {
+        return $this->json;
     }
 
     /**
-     * @param string $string
+     * @param string $json
      * @return $this
      */
-    public function setString($string) {
-        $this->string = $string;
+    public function setJson($json) {
+        $this->json = $json;
 
         return $this;
     }
 
     /**
-     * @param string $string
+     * @param string $json
      */
-    public function __construct($string) {
-        $this->setString($string);
+    public function __construct($json) {
+        $this->setJson($json);
 
-        $message = 'Json "' . $this->getString() . '" is invalid';
+        $message = 'Json "' . $this->getJson() . '" is invalid';
 
         parent::__construct($message);
     }
