@@ -132,7 +132,7 @@ abstract class Mapper implements MapperInterface {
     /**
      * @return boolean
      */
-    public function getValidation() {
+    public function hasValidation() {
         return $this->validation;
     }
 

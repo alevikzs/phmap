@@ -65,7 +65,7 @@ interface MapperInterface {
     /**
      * @return boolean
      */
-    public function getValidation();
+    public function hasValidation();
 
     /**
      * @param array $attributes

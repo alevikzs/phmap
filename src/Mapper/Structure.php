@@ -225,7 +225,7 @@ abstract class Structure extends Mapper {
                         ->getOutputObject()
                         ->$setter($valueToMap);
                 }
-            } elseif ($this->getValidation()) {
+            } elseif ($this->hasValidation()) {
                 throw new UnknownFieldException($transformedAttribute, $this->getOutputClass());
             }
         }
@@ -237,18 +237,18 @@ abstract class Structure extends Mapper {
      * @return array
      */
     protected function getCurrentSkipAttributes() {
-        static $currentSkipAttributes = [];
+        static $skipAttributes = [];
 
-        if (empty($currentSkipAttributes)) {
+        if (empty($skipAttributes)) {
             foreach ($this->getSkipAttributes() as $attribute) {
                 $attributes = explode('.', $attribute);
                 if (count($attributes) === 1) {
-                    $currentSkipAttributes[] = array_pop($attributes);
+                    $skipAttributes[] = array_pop($attributes);
                 }
             }
         }
 
-        return $currentSkipAttributes;
+        return $skipAttributes;
     }
 
     /**
@@ -258,11 +258,11 @@ abstract class Structure extends Mapper {
     protected function getSkipAttributesByParent($parentAttribute) {
         $skipAttributes = [];
 
-        foreach ($this->getSkipAttributes() as $skipAttribute) {
-            $parentAttributeWithDelimiter = $parentAttribute . '.';
+        $parentAttribute = $parentAttribute . '.';
 
-            if (strpos($skipAttribute, $parentAttributeWithDelimiter) === 0) {
-                $skipAttributes[] = str_replace($parentAttributeWithDelimiter, '', $skipAttribute);
+        foreach ($this->getSkipAttributes() as $skipAttribute) {
+            if (strpos($skipAttribute, $parentAttribute) === 0) {
+                $skipAttributes[] = str_replace($parentAttribute, '', $skipAttribute);
             }
         }
 
@@ -280,7 +280,7 @@ abstract class Structure extends Mapper {
     /**
      * @param string $attribute
      * @param mixed $value
-     * @param Annotations $methodAnnotations
+     * @param Annotations $annotations
      * @param Transform|null $transform
      * @return mixed
      * @throws MustBeSimpleException
@@ -290,24 +290,24 @@ abstract class Structure extends Mapper {
     protected function buildValueToMap(
         $attribute,
         $value,
-        Annotations $methodAnnotations,
+        Annotations $annotations,
         Transform $transform = null
     ) {
         $valueToMap = $value;
 
-        if ($methodAnnotations->has('mapper')) {
-            /** @var Annotation $mapperAnnotation */
-            $mapperAnnotation = $methodAnnotations->get('mapper');
-            $mapperAnnotationClass = $mapperAnnotation->getArgument('class');
-            $mapperAnnotationIsArray = $mapperAnnotation->getArgument('isArray');
+        if ($annotations->has('mapper')) {
+            /** @var Annotation $annotation */
+            $annotation = $annotations->get('mapper');
+            $annotationClass = $annotation->getArgument('class');
+            $annotationIsArray = $annotation->getArgument('isArray');
 
             $transforms = $transform ? $transform->getTransforms() : null;
 
             $skipAttributes = $this->getSkipAttributesByParent($attribute);
 
             if ($this->isObject($value)) {
-                if ($mapperAnnotationIsArray) {
-                    if ($this->getValidation()) {
+                if ($annotationIsArray) {
+                    if ($this->hasValidation()) {
                         throw new MustBeSequenceException($attribute, $this->getOutputClass());
                     } else {
                         $valueToMap = null;
@@ -315,39 +315,39 @@ abstract class Structure extends Mapper {
                 } else {
                     /** @var object|array $value */
                     /** @var Mapper $mapper */
-                    $mapper = new static($value, $mapperAnnotationClass);
+                    $mapper = new static($value, $annotationClass);
                     $valueToMap = $mapper
                         ->setTransforms($transforms)
-                        ->setValidation($this->getValidation())
+                        ->setValidation($this->hasValidation())
                         ->setSkipAttributes($skipAttributes)
                         ->map();
                 }
             } else {
-                if ($mapperAnnotationIsArray) {
-                    $validation = $this->getValidation();
+                if ($annotationIsArray) {
+                    $validation = $this->hasValidation();
                     $valueToMap = array_map(function($value) use (
-                        $mapperAnnotationClass,
+                        $annotationClass,
                         $transforms,
                         $validation,
                         $skipAttributes
                     ) {
                         /** @var object|array $value */
                         /** @var Mapper $mapper */
-                        $mapper = new static($value, $mapperAnnotationClass);
+                        $mapper = new static($value, $annotationClass);
                         return $mapper
                             ->setTransforms($transforms)
                             ->setValidation($validation)
                             ->setSkipAttributes($skipAttributes)
                             ->map();
                     }, $value);
-                } elseif ($this->getValidation()) {
+                } elseif ($this->hasValidation()) {
                     throw new MustBeObjectException($attribute, $this->getOutputClass());
                 } else {
                     $valueToMap = null;
                 }
             }
         } elseif ($this->isStructure($value)) {
-            if ($this->getValidation()) {
+            if ($this->hasValidation()) {
                 throw new MustBeSimpleException($attribute, $this->getOutputClass());
             } else {
                 $valueToMap = null;

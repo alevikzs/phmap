@@ -110,9 +110,9 @@ abstract class Wrapper implements MapperInterface {
     /**
      * @return boolean
      */
-    public function getValidation() {
+    public function hasValidation() {
         return $this->getMapper()
-            ->getValidation();
+            ->hasValidation();
     }
 
     /**
