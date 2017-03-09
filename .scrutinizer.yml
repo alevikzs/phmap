@@ -1,8 +1,13 @@
 imports:
     - php
-
+checks:
+    php:
+        code_rating: true
+        duplication: true
 tools:
     external_code_coverage:
-        timeout: 2100
-    php_sim: false
-    php_cpd: false
+        timeout: 600
+filter:
+    paths: ["src/*"]
+    excluded_paths:
+        - "tests/"
