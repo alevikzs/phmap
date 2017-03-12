@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use \PHPUnit\Framework\TestCase,
+use \PHPUnit_Framework_TestCase as TestCase,
 
     \Tests\Dummy\Tree,
     \Tests\Dummy\TreeTransformed,

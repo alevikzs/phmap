@@ -16,7 +16,7 @@ based on [phalcon annotations](https://docs.phalconphp.com/en/latest/reference/a
 
 ##Requirements##
 
-* PHP >= 5.6 && < 7.0;
+* PHP >= 5.4 && < 7.0;
 * [Phalcon framework](https://phalconphp.com) >= 2.0;
 * If you will be using [APC](http://php.net/manual/en/book.apc.php) or [XCache](https://xcache.lighttpd.net/) adapters you need to install corresponding PHP extensions.
 
