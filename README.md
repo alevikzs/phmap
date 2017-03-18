@@ -1,4 +1,4 @@
-#PhMap#
+# PhMap
 
 [![License](http://poser.pugx.org/alevikzs/phmap/license)](https://packagist.org/packages/alevikzs/phmap)
 [![Latest Stable Version](http://poser.pugx.org/alevikzs/phmap/v/stable)](https://packagist.org/packages/alevikzs/phmap) 
@@ -9,23 +9,23 @@
 [![Code Climate](https://codeclimate.com/github/alevikzs/phmap/badges/gpa.svg)](https://codeclimate.com/github/alevikzs/phmap)
 [![Build Status](https://scrutinizer-ci.com/g/alevikzs/phmap/badges/build.png?b=master)](https://scrutinizer-ci.com/g/alevikzs/phmap/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/alevikzs/phmap/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/alevikzs/phmap/?branch=master)
-##About##
+## About
 
 The PhMap is a PHP package for create objects from JSON strings, associative arrays and objects. The PhMap is 
 based on [phalcon annotations](https://docs.phalconphp.com/en/latest/reference/annotations.html).
 
-##Requirements##
+## Requirements
 
 * PHP >= 5.4 && < 7.0;
 * [Phalcon framework](https://phalconphp.com) >= 2.0;
 * If you will be using [APC](http://php.net/manual/en/book.apc.php) or [XCache](https://xcache.lighttpd.net/) adapters you need to install corresponding PHP extensions.
 
-##Installation##
+## Installation
 
 1. Require the package and its dependencies with composer: ```$ composer require alevikzs/phmap```
 2. Install [Phalcon framework](https://phalconphp.com). Detail guide is [here](https://phalconphp.com/en/download).
 
-##How to use##
+## How to use
 
 ```php
 class Tree {
@@ -249,7 +249,7 @@ $result = $tree->mapper($json)->map();
 $result = Tree::staticMapper($json)->map();
 ```
 
-##The MIT License (MIT)##
+## The MIT License (MIT)
 
 **Copyright (c) 2016 Alexey Novikov <alekseeey@gmail.com>**
 
